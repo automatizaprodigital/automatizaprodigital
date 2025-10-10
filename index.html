@@ -371,7 +371,7 @@
             // URL de tu webhook de n8n para el chatbot
             const CHATBOT_URL = "https://dapadi.app.n8n.cloud/webhook/e4778cce-59f3-4f5d-b6ac-f5486e5f7ccd/chat";
 
-            // Estilos CSS para el botón de chat
+            // Estilos CSS para el botón de chat (alineados con tus variables de diseño)
             const chatStyle = `
                 position: fixed;
                 bottom: 20px;
@@ -414,7 +414,7 @@
             const chatButton = document.createElement('button');
             chatButton.id = 'n8n-chatbot-button';
             chatButton.style.cssText = chatStyle;
-            chatButton.innerHTML = '🤖'; // Icono por defecto
+            chatButton.innerHTML = '🤖'; 
             document.body.appendChild(chatButton);
 
             // 2. Crear el Iframe que contendrá el chat
@@ -443,7 +443,7 @@
                         chatIframe.style.opacity = '1';
                         chatIframe.style.transform = 'translateY(0) scale(1)';
                     }, 10);
-                    chatButton.innerHTML = '✖️'; // Cambia el icono cuando está abierto
+                    chatButton.innerHTML = '✖️'; 
                     chatButton.style.backgroundColor = 'var(--color-accent-green)';
                     chatButton.style.boxShadow = '0 4px 12px rgba(57, 255, 20, 0.7)';
                 }
