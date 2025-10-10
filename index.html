@@ -366,91 +366,92 @@
         <p>Email: <a href="mailto:info.automatizaprodigital@gmail.com">info.automatizaprodigital@gmail.com</a> | Teléfono: <a href="tel:+34688793329">+34 688 793 329</a></p>
     </footer>
 
+    <style>
+        /* Estilos del botón flotante */
+        #n8n-chatbot-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: var(--color-accent-blue);
+            color: var(--color-bg-primary);
+            border-radius: 50%;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 255, 255, 0.6);
+            font-size: 28px;
+            line-height: 60px;
+            text-align: center;
+            cursor: pointer;
+            z-index: 10000;
+            transition: transform 0.3s ease, background-color 0.3s, box-shadow 0.3s;
+            font-family: var(--font-family-base);
+        }
+
+        /* Estilos de la ventana de chat (iframe) - Oculta por defecto */
+        #n8n-chatbot-iframe {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 350px;
+            height: 500px;
+            border: 1px solid var(--color-accent-green);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(57, 255, 20, 0.5);
+            z-index: 9999;
+            transition: opacity 0.3s, transform 0.3s;
+            transform: translateY(10px) scale(0.95);
+            transform-origin: bottom right;
+            opacity: 0;
+            display: none;
+        }
+
+        /* Clase 'is-open' (Añadida por JavaScript para MOSTRAR) */
+        #n8n-chatbot-iframe.is-open {
+            display: block;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Cambios de estilo del botón cuando está abierto (cambia de color) */
+        #n8n-chatbot-button.is-open {
+            background-color: var(--color-accent-green);
+            box-shadow: 0 4px 12px rgba(57, 255, 20, 0.7);
+        }
+    </style>
+
+    <button id="n8n-chatbot-button">🤖</button>
+    
+    <iframe id="n8n-chatbot-iframe" src="[PEGA AQUÍ LA URL DE EMBED]"></iframe>
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // URL de tu webhook de n8n para el chatbot
-           <iframe  id="n8n-chatbot-iframe" src="https://dapadi.app.n8n.cloud/webhook/e4778cce-59f3-4f5d-b6ac-f5486e5f7ccd/chat"></iframe>
-
-            // Estilos CSS para el botón de chat (alineados con tus variables de diseño)
-            const chatStyle = `
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                width: 60px;
-                height: 60px;
-                background-color: var(--color-accent-blue);
-                color: var(--color-bg-primary);
-                border-radius: 50%;
-                border: none;
-                box-shadow: 0 4px 12px rgba(0, 255, 255, 0.6); /* Sombra Neón Azul */
-                font-size: 28px;
-                line-height: 60px;
-                text-align: center;
-                cursor: pointer;
-                z-index: 10000;
-                transition: transform 0.3s ease, background-color 0.3s;
-                font-family: var(--font-family-base);
-            `;
+            const button = document.getElementById('n8n-chatbot-button');
+            const iframe = document.getElementById('n8n-chatbot-iframe');
             
-            // Estilos CSS para la ventana del chat (iframe)
-            const iframeStyle = `
-                position: fixed;
-                bottom: 100px;
-                right: 20px;
-                width: 350px;
-                height: 500px;
-                border: 1px solid var(--color-accent-green); /* Borde Neón Verde */
-                border-radius: 12px;
-                box-shadow: 0 4px 20px rgba(57, 255, 20, 0.5); /* Sombra Neón Verde */
-                z-index: 9999;
-                transition: opacity 0.3s, transform 0.3s;
-                opacity: 0;
-                transform: translateY(10px) scale(0.95);
-                transform-origin: bottom right;
-                display: none;
-            `;
+            button.addEventListener('click', function() {
+                const isOpen = iframe.classList.contains('is-open');
 
-            // 1. Crear el botón flotante
-            const chatButton = document.createElement('button');
-            chatButton.id = 'n8n-chatbot-button';
-            chatButton.style.cssText = chatStyle;
-            chatButton.innerHTML = '🤖'; 
-            document.body.appendChild(chatButton);
-
-            // 2. Crear el Iframe que contendrá el chat
-            const chatIframe = document.createElement('iframe');
-            chatIframe.id = 'n8n-chatbot-iframe';
-            chatIframe.src = CHATBOT_URL;
-            chatIframe.style.cssText = iframeStyle;
-            document.body.appendChild(chatIframe);
-
-            let isOpen = false;
-
-            // 3. Lógica para abrir/cerrar
-            chatButton.addEventListener('click', function() {
                 if (isOpen) {
                     // Cerrar
-                    chatIframe.style.opacity = '0';
-                    chatIframe.style.transform = 'translateY(10px) scale(0.95)';
-                    setTimeout(() => { chatIframe.style.display = 'none'; }, 300);
-                    chatButton.innerHTML = '🤖';
-                    chatButton.style.backgroundColor = 'var(--color-accent-blue)';
-                    chatButton.style.boxShadow = '0 4px 12px rgba(0, 255, 255, 0.6)';
+                    iframe.classList.remove('is-open');
+                    button.classList.remove('is-open');
+                    button.innerHTML = '🤖';
+                    iframe.style.display = 'none'; 
                 } else {
                     // Abrir
-                    chatIframe.style.display = 'block';
-                    setTimeout(() => {
-                        chatIframe.style.opacity = '1';
-                        chatIframe.style.transform = 'translateY(0) scale(1)';
-                    }, 10);
-                    chatButton.innerHTML = '✖️'; 
-                    chatButton.style.backgroundColor = 'var(--color-accent-green)';
-                    chatButton.style.boxShadow = '0 4px 12px rgba(57, 255, 20, 0.7)';
+                    iframe.classList.add('is-open');
+                    button.classList.add('is-open');
+                    button.innerHTML = '✖️';
+                    iframe.style.display = 'block'; 
                 }
-                isOpen = !isOpen;
             });
         });
     </script>
+    ```
+
+Busca esa URL de Embed en n8n y sustitúyela; con eso el problema de bloqueo de iframe quedará resuelto.
     </body>
 </html>
+
 
