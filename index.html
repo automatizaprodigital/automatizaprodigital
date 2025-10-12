@@ -292,29 +292,104 @@
         </div>
     </header>
 
-    <section id="servicios" class="section" aria-labelledby="servicios-titulo">
-        <h2 id="servicios-titulo" class="heading-2">La Automatización a Nivel PRO: Soluciones que Generan ROI.</h2>
-        <div class="services-grid">
-            
-            <div class="service-card">
-                <span class="service-card__icon">📈</span>
-                <h3>Ventas y CRM</h3>
-                <p>Implementamos **asignación instantánea** de *leads* y seguimiento automatizado, garantizando que ninguna oportunidad se enfríe o se pierda.</p>
-            </div>
-            
-            <div class="service-card">
-                <span class="service-card__icon">⚙️</span>
-                <h3>Operaciones y Back-office</h3>
-                <p>Conexión de datos perfecta entre **facturación, inventario y ERP** para eliminar errores manuales y lograr cierres de mes impecables.</p>
-            </div>
-            
-            <div class="service-card">
-                <span class="service-card__icon">✉️</span>
-                <h3>Marketing y Comunicación</h3>
-                <p>Automatizamos la **segmentación y personalización** de tus campañas de email, liberando a tu equipo para el trabajo estratégico de marca.</p>
-            </div>
+<!-- ================================ -->
+<!-- SECCIÓN: AUTOMATIZACIONES EXPRESS -->
+<!-- ================================ -->
+<section id="automatizaciones" class="section" aria-labelledby="automatizaciones-titulo">
+    <h2 id="automatizaciones-titulo" class="heading-2">Automatizaciones Express: Valor en 48 Horas.</h2>
+
+    <div class="services-grid">
+
+        <!-- 1. ALERTA WHATSAPP LEAD -->
+        <div class="service-card reveal">
+            <span class="service-card__icon">💬</span>
+            <h3>Alerta WhatsApp Lead</h3>
+            <p>Recibe un mensaje en WhatsApp cada vez que alguien completa un formulario o te contacta. 
+               <br><br><em>“Nunca pierdas un lead por no mirar el correo.”</em></p>
         </div>
+
+        <!-- 2. FACTURA EXPRESS -->
+        <div class="service-card reveal">
+            <span class="service-card__icon">🧾</span>
+            <h3>Factura Express</h3>
+            <p>Genera automáticamente facturas en PDF y envíalas a tus clientes desde una hoja de cálculo. 
+               <br><br><em>“Facturación sin esfuerzo, lista en segundos.”</em></p>
+        </div>
+
+        <!-- 3. CITAS SINCRONIZADAS -->
+        <div class="service-card reveal">
+            <span class="service-card__icon">🗓️</span>
+            <h3>Citas Sincronizadas</h3>
+            <p>Guarda automáticamente las reservas de Calendly o Google Calendar en una base de datos y envía recordatorios automáticos. 
+               <br><br><em>“Tu agenda siempre sincronizada, sin tareas manuales.”</em></p>
+        </div>
+
+        <!-- 4. REPORTE SEMANAL -->
+        <div class="service-card reveal">
+            <span class="service-card__icon">📊</span>
+            <h3>Reporte Semanal</h3>
+            <p>Envía un resumen automático de ventas, formularios o métricas cada semana por correo. 
+               <br><br><em>“Ten tus KPIs en tu bandeja cada lunes.”</em></p>
+        </div>
+
+    </div>
+
+    <div style="text-align:center; margin-top:48px;">
+        <button onclick="Calendly.initPopupWidget({url: 'https://calendly.com/info-automatizaprodigital/30min'});return false;" class="cta-button">
+            [ Agenda tu Automatización Express ]
+        </button>
+    </div>
     </section>
+    
+    <!-- ================================ -->
+    <!-- EFECTO REVEAL + PULSO NEÓN -->
+    <!-- ================================ -->
+    <style>
+    .reveal {
+      opacity: 0;
+      transform: translateY(60px);
+      transition: all 0.9s ease;
+      filter: brightness(0.8);
+    }
+    
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+      filter: brightness(1);
+      animation: neonPulse 3s ease-in-out infinite alternate;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.25),
+                  0 0 15px rgba(57, 255, 20, 0.15);
+    }
+    
+    /* 🔁 Animación de pulso neón */
+    @keyframes neonPulse {
+      0% {
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.2),
+                    0 0 10px rgba(57, 255, 20, 0.1);
+      }
+      50% {
+        box-shadow: 0 0 25px rgba(0, 255, 255, 0.5),
+                    0 0 25px rgba(57, 255, 20, 0.4);
+      }
+      100% {
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.2),
+                    0 0 10px rgba(57, 255, 20, 0.1);
+      }
+    }
+    </style>
+    
+    <script>
+    document.addEventListener("scroll", function() {
+      const reveals = document.querySelectorAll(".reveal");
+      for (const el of reveals) {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 100) {
+          el.classList.add("visible");
+        }
+      }
+    });
+    </script>
+
 
     <section id="casos" class="section" aria-labelledby="casos-titulo">
         <h2 id="casos-titulo" class="heading-2">Los Números Hablan por Nosotros.</h2>
@@ -453,5 +528,6 @@
 Busca esa URL de Embed en n8n y sustitúyela; con eso el problema de bloqueo de iframe quedará resuelto.
     </body>
 </html>
+
 
 
