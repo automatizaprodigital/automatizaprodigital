@@ -486,36 +486,12 @@
         }
     </style>
 
-    <button id="n8n-chatbot-button">🤖</button>
-    
-    <iframe id="n8n-chatbot-iframe" src="[PEGA AQUÍ LA URL DE EMBED]"></iframe>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const button = document.getElementById('n8n-chatbot-button');
-            const iframe = document.getElementById('n8n-chatbot-iframe');
-            
-            button.addEventListener('click', function() {
-                const isOpen = iframe.classList.contains('is-open');
-
-                if (isOpen) {
-                    // Cerrar
-                    iframe.classList.remove('is-open');
-                    button.classList.remove('is-open');
-                    button.innerHTML = '🤖';
-                    iframe.style.display = 'none'; 
-                } else {
-                    // Abrir
-                    iframe.classList.add('is-open');
-                    button.classList.add('is-open');
-                    button.innerHTML = '✖️';
-                    iframe.style.display = 'block'; 
-                }
-            });
-        });
-    </script>
+    <!-- Start of HubSpot Embed Code -->
+      <script type="text/javascript" id="hs-script-loader" async defer src="//js-eu1.hs-scripts.com/147073534.js"></script>
+    <!-- End of HubSpot Embed Code -->
 </body>
 </html>
+
 
 
 
