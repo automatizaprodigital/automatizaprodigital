@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sobre Nosotros | AutomatizaPRO</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-bg-primary: #0D0D0D;
+      --color-text-base: #F5F5F5;
+      --color-ui-surface: #1A1A1A;
+      --color-accent-blue: #FF0000;
+      --color-accent-green: #ffffff;
+      --shadow-neon-blue: 0 0 20px rgba(255, 0, 0, 0.6);
+      --font-family-base: 'Inter', sans-serif;
+      --spacing-unit: 8px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html,body{height:100%;}
+    body{
+      background-color:var(--color-bg-primary);
+      color:var(--color-text-base);
+      font-family:var(--font-family-base);
+      text-rendering:optimizeLegibility;
+      overflow-x:hidden;
+    }
+
+    /* NAV */
+    .navigation{
+      position:fixed;top:0;left:0;width:100%;
+      display:flex;justify-content:space-between;align-items:center;
+      padding:16px 5%;
+      background-color:rgba(13,13,13,0.95);
+      backdrop-filter:blur(5px);
+      border-bottom:1px solid rgba(255,0,0,0.15);
+      z-index:1000;
+    }
+    .navigation__logo{font-size:1.8rem;font-weight:900;color:var(--color-text-base);}
+    .navigation__logo-pro{color:var(--color-accent-blue);text-shadow:var(--shadow-neon-blue);}
+    .navigation__links{display:flex;gap:16px;}
+    .navigation__link{color:var(--color-text-base);text-decoration:none;}
+    .navigation__link--cta{border:1px solid var(--color-accent-blue);padding:8px 14px;border-radius:6px;}
+
+    /* MAIN SECTION */
+    main{padding:140px 5% 80px;max-width:1200px;margin:0 auto;text-align:center;}
+    h1{font-size:clamp(2rem,5vw,3rem);font-weight:900;text-shadow:var(--shadow-neon-blue);margin-bottom:20px;}
+    p.subheadline{font-size:1.1rem;opacity:0.8;margin-bottom:60px;}
+
+    /* TEAM CARDS */
+    .team-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:40px;
+      justify-content:center;
+      align-items:center;
+    }
+    .team-card{
+      background-color:var(--color-ui-surface);
+      border:1px solid rgba(255,255,255,0.08);
+      border-radius:12px;
+      padding:30px 20px;
+      box-shadow:0 0 20px rgba(255,0,0,0.1);
+      transition:all 0.3s ease;
+    }
+    .team-card:hover{
+      transform:translateY(-5px);
+      box-shadow:0 0 25px rgba(255,0,0,0.25);
+    }
+    .team-photo{
+      width:140px;
+      height:140px;
+      border-radius:50%;
+      margin:0 auto 20px;
+      background:#111;
+      background-size:cover;
+      background-position:center;
+      border:2px solid var(--color-accent-blue);
+    }
+    .team-name{font-size:1.3rem;font-weight:700;margin-bottom:6px;}
+    .team-role{font-size:1rem;color:var(--color-accent-green);margin-bottom:12px;}
+    .team-desc{font-size:0.95rem;opacity:0.85;line-height:1.5;}
+
+    /* FOOTER */
+    footer{
+      text-align:center;
+      padding:30px 5%;
+      border-top:1px solid rgba(255,0,0,0.15);
+      font-size:0.9rem;
+      color:#aaa;
+      position:relative;
+      z-index:1;
+      margin-top:100px;
+    }
+
+    /* CHATBOT */
+    #n8n-chatbot-button{
+      position:fixed;bottom:20px;right:20px;
+      width:60px;height:60px;
+      background-color:var(--color-accent-blue);
+      color:var(--color-bg-primary);
+      border-radius:50%;
+      border:none;
+      box-shadow:0 4px 12px rgba(255,0,0,.6);
+      font-size:28px;line-height:60px;
+      text-align:center;cursor:pointer;
+      z-index:100000;
+      transition:transform .3s ease,background-color .3s,box-shadow .3s;
+    }
+    #n8n-chatbot-iframe{
+      position:fixed;bottom:100px;right:20px;width:350px;height:500px;
+      border:1px solid var(--color-accent-green);
+      border-radius:12px;
+      box-shadow:0 4px 20px rgba(255,255,255,.5);
+      z-index:99999;
+      transition:opacity .3s,transform .3s;
+      transform:translateY(10px) scale(.95);
+      transform-origin:bottom right;
+      opacity:0;display:none;background:white;
+    }
+    #n8n-chatbot-iframe.is-open{display:block;opacity:1;transform:translateY(0) scale(1);}
+    #n8n-chatbot-button.is-open{background-color:var(--color-accent-green);}
+  </style>
+</head>
+<body>
+
+  <nav class="navigation">
+    <div class="navigation__logo">Automatiza<span class="navigation__logo-pro">PRO</span></div>
+    <div class="navigation__links">
+      <a href="index.html" class="navigation__link">Inicio</a>
+      <a href="calculadora.html" class="navigation__link">Calculadora</a>
+      <a href="#contacto" class="navigation__link navigation__link--cta" onclick="Calendly.initPopupWidget({url: 'https://calendly.com/info-automatizaprodigital/30min'});return false;">Contacto</a>
+    </div>
+  </nav>
+
+  <main>
+    <h1>Conoce al Equipo Detrás de AutomatizaPRO</h1>
+    <p class="subheadline">Arquitectos de automatización con visión estratégica y precisión técnica.</p>
+
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-photo" style="background-image:url('assets/david.jpg');"></div>
+        <h3 class="team-name">David Pastor Díaz</h3>
+        <p class="team-role">Arquitecto de Automatización</p>
+        <p class="team-desc">Especialista en diseño de flujos B2B y optimización de procesos. Creador de ecosistemas automatizados que transforman la forma en que las empresas operan.</p>
+      </div>
+
+      <div class="team-card">
+        <div class="team-photo" style="background-image:url('assets/lorenzo.jpg');"></div>
+        <h3 class="team-name">Lorenzo Martín</h3>
+        <p class="team-role">Desarrollador de Integraciones</p>
+        <p class="team-desc">Experto en APIs, bases de datos y automatización con Make, Zapier y n8n. Conecta tecnología y estrategia para eliminar la fricción operativa.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 AutomatizaPRO. Todos los derechos reservados.</p>
+    <p>Email: <a href="mailto:info.automatizaprodigital@gmail.com">info.automatizaprodigital@gmail.com</a></p>
+  </footer>
+
+  <button id="n8n-chatbot-button" aria-label="Abrir chat">💬</button>
+  <iframe id="n8n-chatbot-iframe" src="https://n8n.automatizaprodigital.pro/chatbot" title="Chat n8n"></iframe>
+  <script>
+    const btn=document.getElementById('n8n-chatbot-button');
+    const iframe=document.getElementById('n8n-chatbot-iframe');
+    btn.addEventListener('click',()=>{
+      const open=iframe.classList.toggle('is-open');
+      btn.classList.toggle('is-open',open);
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Calculadora ROI | AutomatizaPRO</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+  <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+  <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
+  <style>
+    :root {
+      --color-bg-primary: #0D0D0D;
+      --color-text-base: #F5F5F5;
+      --color-ui-surface: #1A1A1A;
+      --color-accent-blue: #FF0000;
+      --color-accent-green: #ffffff;
+      --shadow-neon-blue: 0 0 20px rgba(255, 0, 0, 0.6);
+      --font-family-base: 'Inter', sans-serif;
+      --spacing-unit: 8px;
+    }
+    *, *::before, *::after {box-sizing:border-box;margin:0;padding:0;}
+    html, body {height:100%;}
+    body {
+      background-color: var(--color-bg-primary);
+      color: var(--color-text-base);
+      font-family: var(--font-family-base);
+      overflow-x: hidden;
+      text-align: center;
+    }
+    #particlesCanvas {position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+
+    .navigation {
+      position:fixed;top:0;left:0;width:100%;
+      display:flex;justify-content:space-between;align-items:center;
+      padding:16px 5%;
+      background-color:rgba(13,13,13,0.95);
+      backdrop-filter:blur(5px);
+      border-bottom:1px solid rgba(255,0,0,0.15);
+      z-index:1000;
+    }
+    .navigation__logo{font-size:1.8rem;font-weight:900;color:var(--color-text-base);}
+    .navigation__logo-pro{color:var(--color-accent-blue);text-shadow:var(--shadow-neon-blue);}
+    .navigation__links{display:flex;gap:16px;}
+    .navigation__link{color:var(--color-text-base);text-decoration:none;}
+    .navigation__link--cta{border:1px solid var(--color-accent-blue);padding:8px 14px;border-radius:6px;}
+
+    .section {position:relative;z-index:1;padding:140px 5% 80px 5%;}
+    h1 {font-size:clamp(2rem,5vw,3rem);font-weight:900;margin-bottom:20px;text-shadow:var(--shadow-neon-blue);}
+    p.subheadline {font-size:1.1rem;opacity:0.8;margin-bottom:60px;}
+
+    .calc-box {
+      max-width: 480px;
+      margin: 0 auto;
+      background-color: var(--color-ui-surface);
+      border-radius: 10px;
+      padding: 30px;
+      text-align: center;
+      border: 1px solid rgba(255, 0, 0, 0.2);
+      box-shadow: 0 0 25px rgba(255, 0, 0, 0.15);
+    }
+    .calc-box label {
+      display:block;
+      font-weight:bold;
+      margin-top:10px;
+      margin-bottom:5px;
+      color: var(--color-text-base);
+    }
+    .calc-box input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid var(--color-accent-blue);
+      background-color: #222;
+      color: var(--color-text-base);
+      text-align: center;
+      margin-bottom: 15px;
+      font-size: 1rem;
+    }
+    .calc-box input:focus {
+      outline:none;
+      border-color:var(--color-accent-green);
+      box-shadow:0 0 10px rgba(255,255,255,0.2);
+    }
+    .cta-button {
+      display:inline-block;
+      margin-top:20px;
+      padding:10px 20px;
+      background:var(--color-accent-blue);
+      color:var(--color-bg-primary);
+      border:2px solid var(--color-accent-blue);
+      border-radius:6px;
+      font-weight:bold;
+      text-transform:uppercase;
+      cursor:pointer;
+      transition:all 0.3s;
+    }
+    .cta-button:hover {
+      background:var(--color-bg-primary);
+      color:var(--color-accent-green);
+      border-color:var(--color-accent-green);
+    }
+    #resultado {margin-top:25px;font-size:1.2rem;}
+    #resultado strong {color:var(--color-accent-green);}
+    footer {
+      text-align:center;
+      padding:30px 5%;
+      border-top:1px solid rgba(255,0,0,0.15);
+      font-size:0.9rem;
+      color:#aaa;
+      position:relative;
+      z-index:1;
+      margin-top:100px;
+    }
+
+    #n8n-chatbot-button{position:fixed;bottom:20px;right:20px;width:60px;height:60px;background-color:var(--color-accent-blue);color:var(--color-bg-primary);border-radius:50%;border:none;box-shadow:0 4px 12px rgba(255,0,0,.6);font-size:28px;line-height:60px;text-align:center;cursor:pointer;z-index:100000;transition:transform .3s ease,background-color .3s,box-shadow .3s;}
+    #n8n-chatbot-iframe{position:fixed;bottom:100px;right:20px;width:350px;height:500px;border:1px solid var(--color-accent-green);border-radius:12px;box-shadow:0 4px 20px rgba(255,255,255,.5);z-index:99999;transition:opacity .3s,transform .3s;transform:translateY(10px) scale(.95);transform-origin:bottom right;opacity:0;display:none;background:white;}
+    #n8n-chatbot-iframe.is-open{display:block;opacity:1;transform:translateY(0) scale(1);}
+    #n8n-chatbot-button.is-open{background-color:var(--color-accent-green);}
+  </style>
+</head>
+<body>
+  <canvas id="particlesCanvas"></canvas>
+
+  <nav class="navigation">
+    <div class="navigation__logo">Automatiza<span class="navigation__logo-pro">PRO</span></div>
+    <div class="navigation__links">
+      <a href="index.html" class="navigation__link">Inicio</a>
+      <a href="equipo.html" class="navigation__link">Sobre Nosotros</a>
+      <a href="#contacto" class="navigation__link navigation__link--cta" onclick="Calendly.initPopupWidget({url: 'https://calendly.com/info-automatizaprodigital/30min'});return false;">Contacto</a>
+    </div>
+  </nav>
+
+  <section class="section">
+    <h1>💡 Calcula tu Retorno de Automatización en 1 Minuto</h1>
+    <p class="subheadline">Descubre cuánto podrías ahorrar cada mes automatizando tus procesos.</p>
+
+    <div class="calc-box">
+      <label for="horas">Horas semanales en tareas repetitivas:</label>
+      <input type="number" id="horas" value="10" min="0">
+      <label for="valor">Valor hora (€):</label>
+      <input type="number" id="valor" value="25" min="0">
+      <label for="tiempo-implementacion">Tiempo de implementación (en semanas):</label>
+      <input type="number" id="tiempo-implementacion" value="2" min="0">
+      <button id="calcular" class="cta-button">Calcular ROI</button>
+      <p id="resultado"></p>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 AutomatizaPRO. Todos los derechos reservados.</p>
+    <p>Email: <a href="mailto:info.automatizaprodigital@gmail.com">info.automatizaprodigital@gmail.com</a></p>
+  </footer>
+
+  <script>
+    const canvas = document.getElementById('particlesCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    function initParticles(){
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const count = Math.max(40, Math.round(window.innerWidth / 25));
+      particles = Array.from({length: count}, () => ({
+        x: Math.random()*canvas.width,
+        y: Math.random()*canvas.height,
+        vx:(Math.random()-0.5)*0.6,
+        vy:(Math.random()-0.5)*0.6,
+        r:Math.random()*2+0.8
+      }));
+      animateParticles();
+    }
+    function animateParticles(){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      for(let i=0;i<particles.length;i++){
+        const p=particles[i];
+        p.x+=p.vx; p.y+=p.vy;
+        if(p.x<0||p.x>canvas.width)p.vx*=-1;
+        if(p.y<0||p.y>canvas.height)p.vy*=-1;
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle='rgba(255,0,0,0.08)'; ctx.fill();
+        for(let j=i+1;j<particles.length;j++){
+          const p2=particles[j];
+          const dx=p.x-p2.x; const dy=p.y-p2.y; const dist=Math.sqrt(dx*dx+dy*dy);
+          if(dist<120){
+            ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p2.x,p2.y);
+            ctx.strokeStyle=`rgba(255,0,0,${1-dist/120})`;ctx.lineWidth=0.4;ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(animateParticles);
+    }
+    window.addEventListener('resize', initParticles);
+    initParticles();
+
+    document.getElementById("calcular").addEventListener("click", ()=>{
+      const horas = parseFloat(document.getElementById("horas").value)||0;
+      const valor = parseFloat(document.getElementById("valor").value)||0;
+      const tiempo = parseFloat(document.getElementById("tiempo-implementacion").value)||0;
+      const ahorroMensual = horas * valor * 4;
+      const ahorroAnual = ahorroMensual * 12;
+      const roi = tiempo > 0 ? ((ahorroMensual * tiempo) / (valor * 10)).toFixed(1) : "N/A";
+      const resultado = document.getElementById("resultado");
+      resultado.innerHTML = `
+        💡 Automatizando podrías ahorrar <strong>${ahorroMensual.toLocaleString()} €</strong> al mes y
+        <strong>${ahorroAnual.toLocaleString()} €</strong> al año.<br>
+        ROI estimado: <strong>${roi}%</strong> durante ${tiempo} semanas de implementación.
+      `;
+    });
+  </script>
+
+  <button id="n8n-chatbot-button" aria-label="Abrir chat">💬</button>
+  <iframe id="n8n-chatbot-iframe" src="https://n8n.automatizaprodigital.pro/chatbot" title="Chat n8n"></iframe>
+  <script>
+    const btn=document.getElementById('n8n-chatbot-button');
+    const iframe=document.getElementById('n8n-chatbot-iframe');
+    btn.addEventListener('click',()=>{
+      const open=iframe.classList.toggle('is-open');
+      btn.classList.toggle('is-open',open);
+    });
+  </script>
+</body>
+</html>
