@@ -5,29 +5,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Sobre Nosotros | AutomatizaPRO</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+  <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+  <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
+
   <style>
     :root {
       --color-bg-primary: #0D0D0D;
       --color-text-base: #F5F5F5;
       --color-ui-surface: #1A1A1A;
-      --color-accent-blue: #FF0000;
-      --color-accent-green: #ffffff;
-      --shadow-neon-blue: 0 0 20px rgba(255, 0, 0, 0.6);
+      --color-accent-red: #FF0000;
+      --color-accent-cyan: #00E0FF;
       --font-family-base: 'Inter', sans-serif;
-      --spacing-unit: 8px;
+      --shadow-neon-red: 0 0 15px rgba(255,0,0,0.5);
+      --shadow-neon-cyan: 0 0 15px rgba(0,224,255,0.4);
     }
+
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    html,body{height:100%;}
-    body{
-      background-color:var(--color-bg-primary);
+    html {scrollbar-gutter: stable;}
+    body {
+      background: linear-gradient(180deg, #0D0D0D 0%, #121212 100%);
       color:var(--color-text-base);
       font-family:var(--font-family-base);
-      text-rendering:optimizeLegibility;
       overflow-x:hidden;
+      line-height:1.6;
     }
 
     /* NAV */
-    .navigation{
+    .navigation {
       position:fixed;top:0;left:0;width:100%;
       display:flex;justify-content:space-between;align-items:center;
       padding:16px 5%;
@@ -37,105 +41,174 @@
       z-index:1000;
     }
     .navigation__logo{font-size:1.8rem;font-weight:900;color:var(--color-text-base);}
-    .navigation__logo-pro{color:var(--color-accent-blue);text-shadow:var(--shadow-neon-blue);}
+    .navigation__logo-pro{color:var(--color-accent-red);text-shadow:var(--shadow-neon-red);}
     .navigation__links{display:flex;gap:16px;}
     .navigation__link{color:var(--color-text-base);text-decoration:none;}
-    .navigation__link--cta{border:1px solid var(--color-accent-blue);padding:8px 14px;border-radius:6px;}
+    .navigation__link--cta{border:1px solid var(--color-accent-red);padding:8px 14px;border-radius:6px;}
 
-    /* MAIN SECTION */
-    main{padding:140px 5% 80px;max-width:1200px;margin:0 auto;text-align:center;}
-    h1{font-size:clamp(2rem,5vw,3rem);font-weight:900;text-shadow:var(--shadow-neon-blue);margin-bottom:20px;}
-    p.subheadline{font-size:1.1rem;opacity:0.8;margin-bottom:60px;}
+    /* MAIN */
+    main {
+      padding:140px 5% 100px;
+      max-width:1200px;margin:0 auto;text-align:center;
+    }
+    h1 {
+      font-size:clamp(2rem,5vw,3rem);
+      font-weight:900;
+      text-shadow:var(--shadow-neon-cyan);
+      margin-bottom:20px;
+    }
+    p.subheadline {
+      font-size:1.1rem;
+      opacity:0.85;
+      margin-bottom:60px;
+      color:#CCC;
+    }
 
-    /* TEAM CARDS */
-    .team-grid{
+    /* TEAM */
+    .team-grid {
       display:grid;
       grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
       gap:40px;
       justify-content:center;
       align-items:center;
     }
-    .team-card{
+    .team-card {
       background-color:var(--color-ui-surface);
+      border-radius:14px;
+      padding:40px 25px;
       border:1px solid rgba(255,255,255,0.08);
-      border-radius:12px;
-      padding:30px 20px;
-      box-shadow:0 0 20px rgba(255,0,0,0.1);
+      box-shadow:0 0 15px rgba(0,224,255,0.1);
       transition:all 0.3s ease;
+      position:relative;
+      overflow:hidden;
     }
-    .team-card:hover{
-      transform:translateY(-5px);
-      box-shadow:0 0 25px rgba(255,0,0,0.25);
+    .team-card:hover {
+      transform:translateY(-8px);
+      box-shadow:0 0 25px rgba(0,224,255,0.4);
     }
-    .team-photo{
-      width:140px;
-      height:140px;
+    .team-photo {
+      width:150px;height:150px;
       border-radius:50%;
       margin:0 auto 20px;
       background:#111;
       background-size:cover;
       background-position:center;
-      border:2px solid var(--color-accent-blue);
+      border:3px solid var(--color-accent-red);
+      box-shadow:0 0 10px rgba(0,224,255,0.4);
+      outline:2px solid var(--color-accent-cyan);
     }
-    .team-name{font-size:1.3rem;font-weight:700;margin-bottom:6px;}
-    .team-role{font-size:1rem;color:var(--color-accent-green);margin-bottom:12px;}
-    .team-desc{font-size:0.95rem;opacity:0.85;line-height:1.5;}
+    .team-name {
+      font-size:1.4rem;
+      font-weight:700;
+      margin-bottom:8px;
+    }
+    .team-role {
+      font-size:1rem;
+      color:var(--color-accent-cyan);
+      margin-bottom:14px;
+    }
+    .team-desc {
+      font-size:0.95rem;
+      opacity:0.85;
+      line-height:1.5;
+      color:#DDD;
+      margin-bottom:20px;
+    }
+    .connect-btn {
+      display:inline-block;
+      padding:10px 22px;
+      background-color:transparent;
+      border:1px solid var(--color-accent-cyan);
+      color:var(--color-accent-cyan);
+      border-radius:6px;
+      transition:all 0.3s;
+      font-weight:600;
+      text-decoration:none;
+    }
+    .connect-btn:hover {
+      background-color:var(--color-accent-cyan);
+      color:#0D0D0D;
+      box-shadow:var(--shadow-neon-cyan);
+    }
 
-    /* FOOTER */
-    footer{
+    /* CTA FINAL */
+    .cta-final {
+      margin-top:100px;
       text-align:center;
-      padding:30px 5%;
+    }
+    .cta-final h2 {
+      font-size:1.8rem;
+      text-shadow:var(--shadow-neon-red);
+      margin-bottom:20px;
+    }
+    .cta-final button {
+      display:inline-block;
+      padding:12px 28px;
+      background-color:var(--color-accent-red);
+      color:#fff;
+      border:none;
+      border-radius:8px;
+      font-weight:700;
+      box-shadow:var(--shadow-neon-red);
+      transition:all 0.3s;
+    }
+    .cta-final button:hover {
+      background-color:transparent;
+      color:var(--color-accent-cyan);
+      border:2px solid var(--color-accent-cyan);
+      box-shadow:var(--shadow-neon-cyan);
+    }
+
+    footer {
+      text-align:center;
+      padding:40px 5%;
       border-top:1px solid rgba(255,0,0,0.15);
       font-size:0.9rem;
       color:#aaa;
-      position:relative;
-      z-index:1;
-      margin-top:100px;
+      margin-top:120px;
     }
 
     /* CHATBOT */
     #n8n-chatbot-button{
-      position:fixed;bottom:20px;right:20px;
-      width:60px;height:60px;
-      background-color:var(--color-accent-blue);
+      position:fixed;bottom:20px;right:20px;width:60px;height:60px;
+      background-color:var(--color-accent-red);
       color:var(--color-bg-primary);
       border-radius:50%;
       border:none;
       box-shadow:0 4px 12px rgba(255,0,0,.6);
       font-size:28px;line-height:60px;
       text-align:center;cursor:pointer;
-      z-index:100000;
-      transition:transform .3s ease,background-color .3s,box-shadow .3s;
+      z-index:100000;transition:all 0.3s;
     }
     #n8n-chatbot-iframe{
       position:fixed;bottom:100px;right:20px;width:350px;height:500px;
-      border:1px solid var(--color-accent-green);
+      border:1px solid var(--color-accent-cyan);
       border-radius:12px;
       box-shadow:0 4px 20px rgba(255,255,255,.5);
-      z-index:99999;
-      transition:opacity .3s,transform .3s;
-      transform:translateY(10px) scale(.95);
-      transform-origin:bottom right;
-      opacity:0;display:none;background:white;
+      z-index:99999;transform:translateY(10px) scale(.95);
+      opacity:0;display:none;transition:all 0.3s;background:white;
     }
     #n8n-chatbot-iframe.is-open{display:block;opacity:1;transform:translateY(0) scale(1);}
-    #n8n-chatbot-button.is-open{background-color:var(--color-accent-green);}
+    #n8n-chatbot-button.is-open{background-color:var(--color-accent-cyan);}
   </style>
 </head>
-<body>
 
+<body>
   <nav class="navigation">
     <div class="navigation__logo">Automatiza<span class="navigation__logo-pro">PRO</span></div>
     <div class="navigation__links">
       <a href="index.html" class="navigation__link">Inicio</a>
+      <a href="index.html#servicios" class="navigation__link">Servicios</a>
       <a href="calculadora.html" class="navigation__link">Calculadora</a>
-      <a href="#contacto" class="navigation__link navigation__link--cta" onclick="Calendly.initPopupWidget({url: 'https://calendly.com/info-automatizaprodigital/30min'});return false;">Contacto</a>
+      <a href="index.html#casos" class="navigation__link">Casos de Éxito</a>
+      <a href="equipo.html" class="navigation__link">Sobre Nosotros</a>
+      <a href="index.html#contacto" class="navigation__link navigation__link--cta">Contacto</a>
     </div>
   </nav>
 
   <main>
-    <h1>Conoce al Equipo Detrás de AutomatizaPRO</h1>
-    <p class="subheadline">Arquitectos de automatización con visión estratégica y precisión técnica.</p>
+    <h1>Conoce al Equipo que Hace que las Automatizaciones Sucedan</h1>
+    <p class="subheadline">Somos arquitectos digitales que conectan estrategia, software y personas para liberar el potencial operativo de cada empresa.</p>
 
     <div class="team-grid">
       <div class="team-card">
@@ -143,6 +216,7 @@
         <h3 class="team-name">David Pastor Díaz</h3>
         <p class="team-role">Arquitecto de Automatización</p>
         <p class="team-desc">Especialista en diseño de flujos B2B y optimización de procesos. Creador de ecosistemas automatizados que transforman la forma en que las empresas operan.</p>
+        <a href="https://www.linkedin.com" target="_blank" class="connect-btn">Conecta conmigo</a>
       </div>
 
       <div class="team-card">
@@ -150,13 +224,18 @@
         <h3 class="team-name">Lorenzo Martín</h3>
         <p class="team-role">Desarrollador de Integraciones</p>
         <p class="team-desc">Experto en APIs, bases de datos y automatización con Make, Zapier y n8n. Conecta tecnología y estrategia para eliminar la fricción operativa.</p>
+        <a href="https://www.linkedin.com" target="_blank" class="connect-btn">Conecta conmigo</a>
       </div>
+    </div>
+
+    <div class="cta-final">
+      <h2>¿Listo para optimizar tu empresa con nosotros?</h2>
+      <button onclick="Calendly.initPopupWidget({url: 'https://calendly.com/info-automatizaprodigital/30min'});return false;">Agenda tu llamada</button>
     </div>
   </main>
 
   <footer>
     <p>&copy; 2025 AutomatizaPRO. Todos los derechos reservados.</p>
-    <p>Email: <a href="mailto:info.automatizaprodigital@gmail.com">info.automatizaprodigital@gmail.com</a></p>
   </footer>
 
   <button id="n8n-chatbot-button" aria-label="Abrir chat">💬</button>
@@ -164,11 +243,7 @@
   <script>
     const btn=document.getElementById('n8n-chatbot-button');
     const iframe=document.getElementById('n8n-chatbot-iframe');
-    btn.addEventListener('click',()=>{
-      const open=iframe.classList.toggle('is-open');
-      btn.classList.toggle('is-open',open);
-    });
+    btn.addEventListener('click',()=>{const open=iframe.classList.toggle('is-open');btn.classList.toggle('is-open',open);});
   </script>
-
 </body>
 </html>
