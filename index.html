@@ -1,239 +1,1218 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AutomatizaPRO | Arquitectura de Flujos de Negocio</title>
-  <meta name="description" content="Agencia de automatización B2B. Implementamos flujos inteligentes para eliminar tareas repetitivas y potenciar el crecimiento estratégico.">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-  <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
-  <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutomatizaPRO | Arquitectura de Flujos Extremo PRO</title>
+    <meta name="description" content="Agencia de automatización B2B. Implementamos flujos de trabajo inteligentes para eliminar tareas repetitivas y potenciar el crecimiento estratégico.">
+    <meta name="keywords" content="automatización, b2b, zapier, make, n8n, eficiencia, productividad, crm, erp, david pastor díaz, pro, extremo">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+    <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
 
-  <style>
-    :root {
-      --color-bg-primary: #0D0D0D;
-      --color-text-base: #F5F5F5;
-      --color-ui-surface: #1A1A1A;
-      --color-accent-blue: #FF0000;
-      --color-accent-green: #ffffff;
-      --shadow-neon-blue: 0 0 20px rgba(255,0,0,0.6);
-      --font-family-base: 'Inter', sans-serif;
-    }
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    html {scrollbar-gutter: stable;}
-    body {
-      background-color:var(--color-bg-primary);
-      color:var(--color-text-base);
-      font-family:var(--font-family-base);
-      overflow-x:hidden;
-      line-height:1.6;
-    }
-    #particlesCanvas {
-      position:fixed;top:0;left:0;width:100%;height:100%;
-      z-index:0;pointer-events:none;
-    }
+    <style>
+        /* ========================================================== */
+        /* [1] ARQUITECTURA CSS: TOKENS DE DISEÑO (VARIABLES GLOBALES) */
+        /* ========================================================== */
+        :root {
+            /* Colores de Tema: DARK MODE (Por Defecto) */
+            --color-bg-primary: #0D0D0D; 
+            --color-text-base: #F5F5F5;
+            --color-text-subtle: #AAAAAA;
+            --color-ui-surface: #1A1A1A; /* Superficies de contenido */
+            --color-ui-surface-dark: #121212; /* Superficies de fondo/tarjetas */
 
-    /* NAV */
-    .navigation {
-      position:fixed;top:0;left:0;width:100%;
-      display:flex;justify-content:space-between;align-items:center;
-      padding:16px 5%;
-      background-color:rgba(13,13,13,0.95);
-      backdrop-filter:blur(5px);
-      border-bottom:1px solid rgba(255,0,0,0.15);
-      z-index:1000;
-    }
-    .navigation__logo{font-size:1.8rem;font-weight:900;color:var(--color-text-base);}
-    .navigation__logo-pro{color:var(--color-accent-blue);text-shadow:var(--shadow-neon-blue);}
-    .navigation__links{display:flex;gap:16px;}
-    .navigation__link{color:var(--color-text-base);text-decoration:none;}
-    .navigation__link--cta{border:1px solid var(--color-accent-blue);padding:8px 14px;border-radius:6px;}
+            /* Colores de Acento (Core Brand Colors) */
+            --color-accent-blue: #3B82F6; /* Azul Primario (CTA, Highlights) */
+            --color-accent-cyan: #00FFFF; /* Cian Secundario (Glows, Iconos) */
+            
+            /* Tipografía */
+            --font-family-base: 'Inter', sans-serif;
+            --font-weight-light: 300;
+            --font-weight-regular: 400;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+            --font-weight-extrabold: 900;
+            
+            /* Espaciado & Geometría */
+            --spacing-unit: 8px; /* Base modular: 8px, 16px, 24px, 32px, etc. */
+            --border-radius-base: 8px;
+            --max-width-content: 1400px;
+            
+            /* Transiciones y Animaciones */
+            --transition-speed-fast: 0.2s;
+            --transition-speed-normal: 0.3s;
+            --transition-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+            
+            /* Sombras y Efectos (Neón) */
+            --shadow-neon-text: 0 0 15px rgba(59, 130, 246, 0.6); 
+            --shadow-card: 0 0 30px rgba(59, 130, 246, 0.05), 0 0 15px rgba(255, 255, 255, 0.02);
+            --shadow-header-scrolled: 0 6px 20px rgba(0, 0, 0, 0.6);
+            
+            /* Partículas (usando RGB sin alpha para JS) */
+            --color-particle-main: 59, 130, 246; 
+        }
 
-    /* HERO */
-    header {
-      min-height:100vh;
-      display:flex;flex-direction:column;
-      justify-content:center;align-items:center;
-      text-align:center;padding:140px 5% 80px;
-      position:relative;z-index:1;
-    }
-    .heading-1 {
-      font-size:clamp(2.5rem,7vw,5rem);
-      font-weight:900;text-transform:uppercase;
-      text-shadow:var(--shadow-neon-blue);
-      margin-bottom:20px;
-    }
-    .hero__tagline {
-      font-size:clamp(1rem,3vw,1.5rem);
-      max-width:800px;opacity:.85;
-      margin-bottom:40px;
-    }
-    .cta-button {
-      display:inline-block;
-      padding:12px 28px;
-      background-color:var(--color-accent-blue);
-      color:var(--color-bg-primary);
-      border-radius:8px;font-weight:bold;
-      text-transform:uppercase;
-      border:2px solid var(--color-accent-blue);
-      box-shadow:var(--shadow-neon-blue);
-      transition:all 0.3s;
-    }
-    .cta-button:hover {
-      background-color:var(--color-bg-primary);
-      color:var(--color-accent-green);
-      border-color:var(--color-accent-green);
-      box-shadow:0 0 20px rgba(255,255,255,0.4);
-    }
+        /* LIGHT MODE OVERRIDES: Una inversión completa de los colores base */
+        .light-mode {
+            --color-bg-primary: #F0F0F0;
+            --color-text-base: #1A1A1A;
+            --color-text-subtle: #666666;
+            --color-ui-surface: #FFFFFF;
+            --color-ui-surface-dark: #F7F7F7; 
 
-    /* SECTIONS */
-    .section{position:relative;z-index:1;padding:120px 5%;}
-    .heading-2{text-align:center;font-size:clamp(1.8rem,4vw,3rem);font-weight:700;margin-bottom:40px;text-shadow:var(--shadow-neon-blue);}
-    .services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:40px;max-width:1200px;margin:0 auto;}
-    .service-card{background-color:var(--color-ui-surface);padding:30px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);transition:all 0.3s;}
-    .service-card:hover{transform:translateY(-5px);box-shadow:0 0 20px rgba(255,0,0,0.3);}
-    .service-card__icon{font-size:2rem;margin-bottom:10px;display:block;text-align:center;}
+            --color-accent-blue: #0066CC; 
+            --color-accent-cyan: #00A388; 
+            
+            --shadow-neon-text: none;
+            --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.1); 
+            --shadow-header-scrolled: 0 4px 12px rgba(0, 0, 0, 0.15);
+            --color-particle-main: 0, 102, 204;
+        }
 
-    /* CASES */
-    .case-study{text-align:center;max-width:800px;margin:0 auto;}
-    .case-study__title{color:var(--color-accent-blue);font-size:1.8rem;margin-bottom:10px;text-shadow:var(--shadow-neon-blue);}
-    .results-grid{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:30px;}
-    .result-box{padding:25px;border:2px solid var(--color-accent-blue);border-radius:10px;background-color:rgba(128,128,128,0.05);}
-    .result-box__number{font-size:3rem;font-weight:900;color:var(--color-text-base);text-shadow:var(--shadow-neon-blue);}
 
-    /* CONTACT */
-    .contact-methods{display:flex;justify-content:center;flex-wrap:wrap;gap:40px;text-align:left;}
-    .contact-methods__option{flex:1 1 400px;max-width:450px;padding:30px;background-color:var(--color-ui-surface);border-radius:10px;border:1px solid rgba(255,0,0,0.1);}
-    .contact-methods__title{color:var(--color-text-base);border-bottom:2px dashed var(--color-accent-blue);padding-bottom:10px;margin-bottom:20px;text-align:center;}
-    .contact-form input,.contact-form textarea{width:100%;padding:12px;margin-bottom:12px;background-color:#222;border:1px solid var(--color-accent-blue);color:var(--color-text-base);border-radius:4px;}
-    .contact-form textarea{resize:vertical;min-height:100px;}
-    .contact-form button{width:100%;}
+        /* ========================================================== */
+        /* [2] ESTILOS BASE Y RESET (Mobile First) */
+        /* ========================================================== */
+        *, *::before, *::after {
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            scroll-behavior: smooth;
+        }
+        
+        /* Estilos base del cuerpo que reaccionan al modo */
+        body {
+            background-color: var(--color-bg-primary); 
+            color: var(--color-text-base);
+            font-family: var(--font-family-base); 
+            line-height: 1.6;
+            text-rendering: optimizeLegibility; 
+            overflow-x: hidden;
+            min-height: 100vh;
+            transition: background-color var(--transition-speed-normal), color var(--transition-speed-normal);
+        }
+        
+        /* Utilidad para evitar scroll en móviles con menú abierto */
+        body.no-scroll { overflow: hidden; }
 
-    footer{text-align:center;padding:40px 5%;border-top:1px solid rgba(255,0,0,0.15);font-size:0.9rem;color:#aaa;}
+        /* Estilos del Canvas de Partículas (Fondo) */
+        #particlesCanvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;
+        }
 
-    /* CHATBOT */
-    #n8n-chatbot-button{
-      position:fixed;bottom:20px;right:20px;width:60px;height:60px;
-      background-color:var(--color-accent-blue);color:var(--color-bg-primary);
-      border-radius:50%;border:none;box-shadow:0 4px 12px rgba(255,0,0,.6);
-      font-size:28px;line-height:60px;text-align:center;cursor:pointer;
-      z-index:100000;transition:all 0.3s;
-    }
-    #n8n-chatbot-iframe{
-      position:fixed;bottom:100px;right:20px;width:350px;height:500px;
-      border:1px solid var(--color-accent-green);border-radius:12px;
-      box-shadow:0 4px 20px rgba(255,255,255,.5);
-      z-index:99999;transform:translateY(10px) scale(.95);
-      opacity:0;display:none;transition:all 0.3s;background:white;
-    }
-    #n8n-chatbot-iframe.is-open{display:block;opacity:1;transform:translateY(0) scale(1);}
-    #n8n-chatbot-button.is-open{background-color:var(--color-accent-green);}
-  </style>
+        /* Enlaces */
+        a { 
+            color: var(--color-accent-blue); 
+            text-decoration: none; 
+            transition: color var(--transition-speed-normal); 
+        }
+        a:hover { color: var(--color-accent-cyan); }
+
+
+        /* ========================================================== */
+        /* [3] ESTILOS DE ESTRUCTURA Y TIPOGRAFÍA */
+        /* ========================================================== */
+
+        main { position: relative; z-index: 1; }
+        .section {
+            position: relative; z-index: 1; 
+            padding: calc(10 * var(--spacing-unit)) 5%; /* 80px vertical padding */
+            max-width: var(--max-width-content);
+            margin: 0 auto;
+        }
+        .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; }
+
+        /* Títulos H1 (Hero Headline) */
+        .heading-1 {
+            font-size: clamp(2.5rem, 7vw, 5rem); 
+            font-weight: var(--font-weight-extrabold); 
+            text-transform: uppercase;
+            text-shadow: var(--shadow-neon-text); 
+            line-height: 1.1;
+            transition: text-shadow var(--transition-speed-normal);
+        }
+
+        /* Títulos H2 (Section Title) */
+        .heading-2 {
+            font-size: clamp(1.8rem, 4vw, 3rem); 
+            font-weight: var(--font-weight-extrabold);
+            text-align: center; 
+            margin-bottom: calc(6 * var(--spacing-unit));
+            color: var(--color-accent-blue);
+            text-shadow: var(--shadow-neon-text); 
+            transition: text-shadow var(--transition-speed-normal);
+        }
+        .light-mode .heading-1, .light-mode .heading-2 { 
+            text-shadow: none; 
+            color: var(--color-text-base); /* H1 */
+        }
+        .light-mode .heading-2 { color: var(--color-accent-blue); }
+
+        .subheadline { 
+            font-size: 1.1rem; 
+            opacity: 0.8; 
+            max-width: 800px; 
+            margin: 0 auto calc(8 * var(--spacing-unit)); 
+            text-align: center;
+            color: var(--color-text-subtle);
+        }
+
+        /* ========================================================== */
+        /* [4] BLOQUE NAVIGATION (Mega PRO) */
+        /* ========================================================== */
+        .navigation {
+            position: fixed; 
+            top: 0; 
+            width: 100%;
+            background-color: rgba(13, 13, 13, 0.95);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.0);
+            transition: background-color var(--transition-speed-normal), box-shadow var(--transition-speed-normal), border-color var(--transition-speed-normal);
+        }
+        
+        /* Sticky Header Effect PRO */
+        .navigation.is-scrolled {
+            box-shadow: var(--shadow-header-scrolled);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        .light-mode .navigation {
+            background-color: rgba(240, 240, 240, 0.95);
+        }
+        .light-mode .navigation.is-scrolled {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .navigation__container {
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            max-width: var(--max-width-content); 
+            margin: 0 auto; 
+            position: relative;
+            padding: calc(2 * var(--spacing-unit)) 5%;
+        }
+        .navigation__logo { 
+            font-size: 1.8rem; 
+            font-weight: var(--font-weight-extrabold); 
+            user-select: none; 
+            color: var(--color-text-base); 
+            z-index: 1; /* Asegura que está por encima del menú móvil */
+        }
+        .navigation__logo-pro { 
+            color: var(--color-accent-blue); 
+            text-shadow: var(--shadow-neon-text);
+        }
+        .light-mode .navigation__logo-pro { text-shadow: none; }
+
+        /* Estilos para Desktop (Mostrando enlaces) - ESTO AHORA ESTÁ ESCONDIDO POR EL SIDEBAR */
+        .navigation__links { 
+            display: none; /* Ocultamos los enlaces de navegación de la barra superior */
+        }
+        /* FIN CAMBIO */
+
+        /* Underline effect PRO */
+        .navigation__link::after {
+            content: ''; 
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            width: 0%; 
+            height: 2px; 
+            background: var(--color-accent-blue); 
+            transition: width var(--transition-speed-normal) var(--transition-ease-out);
+        }
+        .navigation__link:hover::after { width: 100%; }
+
+        /* CTA Link */
+        .navigation__link--cta {
+            border: 2px solid var(--color-accent-blue);
+            padding: calc(1 * var(--spacing-unit)) calc(2 * var(--spacing-unit)); 
+            border-radius: var(--border-radius-base);
+            margin-left: calc(4 * var(--spacing-unit)); 
+            font-weight: var(--font-weight-bold);
+            background-color: var(--color-accent-blue);
+            color: var(--color-bg-primary);
+            transition: all var(--transition-speed-normal) var(--transition-ease-out);
+        }
+        .navigation__link--cta:hover { 
+            background-color: transparent; 
+            color: var(--color-accent-blue); 
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+
+
+        /* ========================================================== */
+        /* [5] MODO TOGGLE & MOBILE MENU STYLES */
+        /* ========================================================== */
+
+        /* Botón de Toggle de Modo Claro/Oscuro */
+        #mode-toggle {
+            background: transparent; 
+            border: none; 
+            color: var(--color-accent-cyan);
+            font-size: 1.5rem; 
+            cursor: pointer; 
+            margin-left: 20px; 
+            z-index: 1001;
+            transition: color var(--transition-speed-fast), transform var(--transition-speed-fast);
+        }
+        #mode-toggle:hover { transform: scale(1.15); }
+        .light-mode #mode-toggle { color: var(--color-accent-blue); }
+
+
+        /* Menú Hamburguesa (Sólo visible en móvil) */
+        /* El nav-toggle original para la navegación principal, que ahora no lleva los enlaces principales */
+        .nav-toggle { 
+            display: none; /* Lo ocultamos completamente ya que la navegación principal va en el sidebar izquierdo */
+        }
+        /* FIN CAMBIO */
+
+        /* Animación Hamburguesa a X (PRO) */
+        .nav-toggle.is-active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+        .nav-toggle.is-active span:nth-child(2) { opacity: 0; }
+        .nav-toggle.is-active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+
+        /* ========================================================== */
+        /* [6] BLOQUES DE CONTENIDO REUTILIZABLES */
+        /* ========================================================== */
+
+        /* CTA BUTTON (Alto Contraste) */
+        .cta-button {
+            display: inline-block; 
+            padding: 16px 40px; 
+            background-color: var(--color-accent-blue); 
+            color: var(--color-bg-primary); /* Texto negro/oscuro en CTA */
+            font-size: 1.25rem; 
+            font-weight: var(--font-weight-bold); 
+            border: none; 
+            border-radius: var(--border-radius-base);
+            transition: all var(--transition-speed-normal) var(--transition-ease-out); 
+            text-transform: uppercase; 
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+            letter-spacing: 0.5px;
+        }
+        .cta-button:hover {
+            background-color: #0099FF; 
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.7);
+            transform: translateY(-3px) scale(1.02);
+        }
+        .light-mode .cta-button { 
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3); 
+            color: white; /* Asegurar color blanco/claro en light mode CTA */
+        }
+
+        /* GRID DE TARJETAS (Servicios / Equipo) */
+        .services-grid {
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: calc(6 * var(--spacing-unit));
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .service-card, .team-card, .calc-box, .contact-methods__option {
+            background-color: var(--color-ui-surface-dark); 
+            padding: calc(4 * var(--spacing-unit));
+            border-radius: 16px; 
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: var(--shadow-card); 
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        /* Efecto Hover PRO: 3D Tilt */
+        .service-card:hover, .team-card:hover {
+            box-shadow: 0 0 40px rgba(59, 130, 246, 0.4), 0 0 15px rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px) scale(1.01);
+        }
+        .light-mode .service-card:hover, .light-mode .team-card:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        .service-card__icon { 
+            font-size: 2.5rem; 
+            color: var(--color-accent-cyan); 
+            display: block; 
+            margin-bottom: calc(2 * var(--spacing-unit));
+            transition: color 0.3s;
+        }
+        .light-mode .service-card__icon { color: var(--color-accent-blue); }
+
+
+        /* --- FIX MEGA PRO: CALCULADORA ROI (Alineación Visual) --- */
+        .calc-box label {
+            display: block; /* Fuerza a la etiqueta a tomar toda la línea */
+            text-align: left; /* Alinea el texto de la etiqueta a la izquierda */
+            margin-top: 16px;
+            margin-bottom: 8px;
+            font-weight: var(--font-weight-semibold);
+        }
+        .calc-box input {
+            width: 100%; /* Asegura que el input ocupe el 100% del contenedor */
+            padding: 12px;
+            margin-bottom: 12px;
+            background-color: #222; 
+            border: 1px solid var(--color-accent-blue);
+            color: var(--color-text-base);
+            border-radius: 4px;
+            text-align: center; 
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .calc-box input:focus {
+            outline: none; 
+            border-color: var(--color-accent-cyan); 
+            box-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+        }
+        .light-mode .calc-box input {
+            background-color: white; 
+            color: var(--color-text-base);
+            border-color: #DDD;
+        }
+        /* --- FIN FIX --- */
+
+
+        /* Sección de Equipo */
+        .team-photo {
+            width: 140px; height: 140px; border-radius: 50%;
+            margin: 0 auto 20px; background-size: cover;
+            background-position: center; border: 4px solid var(--color-accent-blue);
+            transition: border-color 0.3s;
+        }
+        .team-card:hover .team-photo { border-color: var(--color-accent-cyan); }
+        .team-role { font-size: 1rem; color: var(--color-accent-cyan); margin-bottom: 12px; }
+
+        /* Resultado Box (Case Study) */
+        .result-box {
+            padding: 32px; border: 1px solid var(--color-accent-blue);
+            border-radius: 16px; background-color: var(--color-ui-surface-dark);
+        }
+        .result-box__number { 
+            font-size: clamp(2.5rem, 6vw, 4rem); 
+            font-weight: var(--font-weight-extrabold); 
+            display: block; 
+            color: var(--color-text-base); 
+            text-shadow: var(--shadow-neon-text); 
+        }
+        .light-mode .result-box__number { text-shadow: none; }
+
+
+        /* Form & Contacto */
+        .contact-methods {
+            display: flex; justify-content: center; flex-wrap: wrap; 
+            gap: calc(8 * var(--spacing-unit)); max-width: 1000px; margin: 0 auto;
+        }
+        .contact-methods__option { flex: 1 1 400px; max-width: 450px; }
+        .contact-methods__title {
+            color: var(--color-text-base); border-bottom: 2px dashed var(--color-accent-blue);
+            padding-bottom: 16px; margin-bottom: 24px; text-align: center;
+        }
+        .contact-form input, .contact-form textarea {
+            width: 100%; padding: 12px; margin-bottom: 16px;
+            background-color: #222; border: 1px solid var(--color-accent-blue);
+            color: var(--color-text-base); border-radius: 4px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .light-mode .contact-form input, .light-mode .contact-form textarea {
+             background-color: white; color: var(--color-text-base); border-color: #DDD;
+        }
+        .contact-form input:focus, .contact-form textarea:focus {
+            outline: none; border-color: var(--color-accent-cyan); 
+            box-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+        }
+
+
+        /* ========================================================== */
+        /* [7] ANIMACIÓN SCROLL REVEAL & FOOTER */
+        /* ========================================================== */
+
+        .reveal { 
+            opacity: 0; 
+            transform: translateY(40px); 
+            transition: all 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Curva de animación avanzada */
+            filter: brightness(0.8);
+        }
+        .reveal.visible {
+            opacity: 1; 
+            transform: translateY(0); 
+            filter: brightness(1);
+            animation: neonPulse 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes neonPulse {
+            0% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.2), 0 0 10px rgba(255, 255, 255, 0.05); }
+            50% { box-shadow: 0 0 25px rgba(59, 130, 246, 0.5), 0 0 25px rgba(0, 255, 255, 0.1); }
+            100% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.2), 0 0 10px rgba(255, 255, 255, 0.05); }
+        }
+        .light-mode .reveal.visible { animation: none; box-shadow: var(--shadow-card); }
+
+        .footer {
+            position: relative; z-index: 1; text-align: center; 
+            padding: 32px 5%; border-top: 1px solid rgba(59, 130, 246, 0.1); 
+            font-size: 0.9rem; color: var(--color-text-subtle);
+        }
+
+        /* Estilos del Chatbot (Asegurando compatibilidad con ambos modos) */
+        #n8n-chatbot-button { /* Mantenemos los estilos del chatbot */ }
+        #n8n-chatbot-iframe { /* Mantenemos los estilos del chatbot */ }
+        
+        /* CÓDIGO AÑADIDO: ESTILO INDICADOR ONLINE */
+        .online-indicator {
+            display: inline-block;
+            width: 10px; height: 10px; border-radius: 50%;
+            background-color: #00FF00; /* Verde brillante para "online" */
+            margin-right: 5px;
+            box-shadow: 0 0 5px #00FF00, 0 0 10px #00FF00;
+            animation: blink 1.5s infinite alternate;
+            vertical-align: middle; /* Align with text */
+        }
+        @keyframes blink {
+            from { opacity: 1; }
+            to { opacity: 0.5; }
+        }
+        /* FIN CÓDIGO AÑADIDO */
+
+        /* Nuevo CSS en la sección <style> para el Modal */
+        #exit-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 10002; display: none; align-items: center; justify-content: center;
+        }
+        #exit-modal-content {
+            background: var(--color-ui-surface-dark); padding: 40px; border-radius: 12px; max-width: 500px; text-align: center; border: 3px solid var(--color-accent-blue); box-shadow: 0 0 50px rgba(59, 130, 246, 0.9);
+            transform: scale(0.8); opacity: 0; transition: all 0.4s ease-out;
+            position: relative;
+        }
+        #exit-modal-content.active {
+            transform: scale(1); opacity: 1;
+        }
+        .modal-close {
+            position: absolute; top: 10px; right: 10px; background: none; border: none; color: var(--color-text-subtle); font-size: 1.5rem; cursor: pointer;
+        }
+        /* FIN CÓDIGO AÑADIDO */
+
+        /* CÓDIGO AÑADIDO: ESTILOS PARA LA NUEVA BARRA LATERAL IZQUIERDA */
+        #pro-bar { 
+            /* Ocultar la barra superior original para cumplir el objetivo del usuario sin 'borrar' el código */
+            display: none !important; 
+        }
+
+        #left-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 300px; /* Ancho del sidebar */
+            height: 100vh;
+            background-color: var(--color-ui-surface-dark); /* Fondo oscuro */
+            color: var(--color-text-base);
+            z-index: 10005; /* Por encima de todo, incluyendo modales */
+            transform: translateX(-100%); /* Inicialmente fuera de pantalla a la izquierda */
+            transition: transform 0.4s var(--transition-ease-out);
+            padding: 20px;
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+            border-right: 3px solid var(--color-accent-cyan);
+            overflow-y: auto;
+            display: flex; /* Añadido para organizar el contenido en columna */
+            flex-direction: column; /* Añadido para organizar el contenido en columna */
+        }
+        
+        #left-sidebar.is-open {
+            transform: translateX(0); /* Deslizar hacia dentro */
+        }
+        
+        .light-mode #left-sidebar {
+            background-color: var(--color-ui-surface);
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Botón de Toggle para la barra lateral (Hamburguesa) */
+        #left-sidebar-toggle {
+            display: flex; 
+            flex-direction: column;
+            justify-content: space-around;
+            width: 40px; 
+            height: 40px; 
+            position: fixed;
+            top: 20px; 
+            left: 20px; /* Posicionado en la esquina superior izquierda */
+            background-color: var(--color-accent-blue);
+            padding: 8px;
+            border: none;
+            border-radius: var(--border-radius-base);
+            cursor: pointer;
+            z-index: 10006;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+            transition: background-color 0.3s;
+        }
+        
+        #left-sidebar-toggle span {
+            display: block;
+            width: 100%;
+            height: 3px;
+            background: var(--color-bg-primary); /* Rayas oscuras */
+            border-radius: 1px;
+            transition: all 0.3s ease;
+        }
+        
+        #left-sidebar-toggle:hover {
+             background-color: var(--color-accent-cyan);
+        }
+        
+        .sidebar-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: var(--color-text-subtle);
+            font-size: 1.8rem;
+            cursor: pointer;
+            z-index: 10007; /* Asegura que la X esté por encima de todo */
+        }
+
+        /* Estilos para los enlaces dentro de la barra lateral izquierda */
+        #left-sidebar .sidebar-navigation__links {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* Alinea los enlaces a la izquierda */
+            width: 100%;
+            margin-top: 40px; /* Espacio debajo del título y la oferta flash */
+            flex-grow: 1; /* Para que ocupe el espacio restante */
+        }
+
+        #left-sidebar .sidebar-navigation__link {
+            padding: 15px 0;
+            width: 100%;
+            color: var(--color-text-base);
+            opacity: 0.8;
+            font-weight: var(--font-weight-semibold);
+            position: relative;
+            transition: opacity var(--transition-speed-fast), color var(--transition-speed-fast);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #left-sidebar .sidebar-navigation__link:last-child {
+            border-bottom: none; /* No hay borde en el último enlace */
+        }
+
+        #left-sidebar .sidebar-navigation__link:hover {
+            opacity: 1;
+            color: var(--color-accent-cyan);
+            padding-left: 10px; /* Pequeño efecto de indentación al pasar el ratón */
+        }
+
+        #left-sidebar .sidebar-navigation__link--cta {
+            margin-top: 20px; /* Espacio antes del CTA */
+            border: 2px solid var(--color-accent-blue);
+            padding: 12px 20px;
+            border-radius: var(--border-radius-base);
+            font-weight: var(--font-weight-bold);
+            background-color: var(--color-accent-blue);
+            color: var(--color-bg-primary);
+            text-align: center;
+            width: 100%;
+            transition: all var(--transition-speed-normal) var(--transition-ease-out);
+        }
+
+        #left-sidebar .sidebar-navigation__link--cta:hover {
+            background-color: transparent;
+            color: var(--color-accent-blue);
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+        /* FIN CÓDIGO AÑADIDO: ESTILOS PARA EL SIDEBAR PROMOCIONAL */
+
+        /* Ajuste para que el botón del sidebar no se solape con el menú de navegación en móvil */
+        @media (max-width: 900px) {
+            #left-sidebar-toggle {
+                top: 20px; 
+                left: 10px;
+            }
+            .navigation__container {
+                 /* Ajustamos la navegación para dejar espacio al botón de la sidebar en la izquierda */
+                padding-left: 60px; 
+            }
+        }
+        
+        /* Ajuste para pantallas más grandes para que el logo no esté muy pegado al borde por el botón hamburguesa */
+        @media (min-width: 901px) {
+            .navigation__container {
+                 padding-left: 80px; /* Más espacio a la izquierda para el logo */
+            }
+        }
+
+        /* ========================================================== */
+        /* [8] MEDIA QUERIES (Mobile Adaptation PRO) */
+        /* ========================================================== */
+
+        /* Tablet y Pequeños Desktops (<1200px) */
+        @media (max-width: 1200px) {
+            .services-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px; }
+            /* .navigation__link { margin-left: 24px; } - Ya no es necesario, los links están en el sidebar */
+        }
+
+        /* Mobile First: Teléfonos y Tablets Verticales (<900px) */
+        @media (max-width: 900px) {
+            .section { padding: 50px 5%; }
+            .hero { text-align: center; align-items: center; padding-top: 120px; }
+            .heading-1 { font-size: 3rem; }
+
+            /* Mobile Navigation Overhaul (Off-Canvas Menu) - ESTO YA NO ES PARA LOS ENLACES PRINCIPES */
+            /* Se mantiene el nav-toggle para el futuro si se añade algo más */
+            .nav-toggle { display: none; } /* Aseguramos que el botón de hamburguesa original no se muestre */
+            #mode-toggle { order: 2; margin-right: auto; } /* Mueve el toggle */
+            .navigation__links {
+                /* Estos estilos ya no afectan a los enlaces principales, que están en #left-sidebar */
+                display: none; /* Aseguramos que este div no se muestre en ningún caso */
+            }
+
+            /* Grid Layouts for Mobile */
+            .services-grid { grid-template-columns: 1fr; gap: 32px; }
+            .results-grid { grid-template-columns: 1fr; }
+            .contact-methods { flex-direction: column; gap: 32px; }
+            .contact-methods__option { max-width: 100%; }
+
+            /* Ajustes en el Footer */
+            .footer p { margin-bottom: 8px; }
+
+            /* Adaptación Sidebar en móvil */
+            #left-sidebar {
+                width: 90%; /* Más estrecho en móvil */
+            }
+        }
+
+    </style>
 </head>
 <body>
-  <canvas id="particlesCanvas"></canvas>
+    <a href="#main-content" class="skip-link" style="position: absolute; top: -40px; left: 0; background: white; color: black; padding: 8px; z-index: 2000;">Saltar al contenido principal</a>
 
-  <nav class="navigation">
-    <div class="navigation__logo">Automatiza<span class="navigation__logo-pro">PRO</span></div>
-    <div class="navigation__links">
-      <a href="#servicios" class="navigation__link">Servicios</a>
-      <a href="calculadora.html" class="navigation__link">Calculadora</a>
-      <a href="#casos" class="navigation__link">Casos de Éxito</a>
-      <a href="equipo.html" class="navigation__link">Sobre Nosotros</a>
-      <a href="#contacto" class="navigation__link navigation__link--cta">Contacto</a>
+    <div id="pro-bar" style="position: sticky; top: 0; left: 0; width: 100%; background-color: var(--color-accent-cyan); color: var(--color-bg-primary); z-index: 1001; text-align: center; padding: 10px 0; font-weight: var(--font-weight-bold); font-size: 0.95rem; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); display: flex; justify-content: center; align-items: center; transition: all 0.3s ease;">
+        <span style="flex-grow: 1;">
+            🚀 **OFERTA FLASH:** Descarga el "Checklist de las 10 Tareas que Debes Automatizar HOY" y triplica tu tiempo libre.
+        </span>
+        <a href="#" class="pro-bar-cta" onclick="alert('Aquí iría la función para abrir el popup de captura de lead'); return false;" style="background-color: var(--color-accent-blue); color: white; padding: 4px 12px; border-radius: 4px; margin-left: 15px; text-decoration: none; font-size: 0.8rem;">
+            ¡DESCARGA GRATIS!
+        </a>
+        <button onclick="document.getElementById('pro-bar').style.display='none';" style="background: none; border: none; color: var(--color-bg-primary); font-size: 1.2rem; cursor: pointer; margin-left: 10px;">&times;</button>
     </div>
-  </nav>
+    
+    <button id="left-sidebar-toggle" aria-label="Abrir menú de navegación y ofertas">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    
+    <div id="left-sidebar" role="navigation" aria-label="Navegación principal y ofertas">
+        <button class="sidebar-close" aria-label="Cerrar barra lateral">&times;</button>
+        
+        <h3 style="color: var(--color-accent-cyan); font-size: 1.5rem; font-weight: var(--font-weight-extrabold); margin-bottom: 20px;">🚀 OFERTA FLASH PRO</h3>
+        <p style="margin-bottom: 30px; color: var(--color-text-subtle);">Descarga el "Checklist de las 10 Tareas que Debes Automatizar HOY" y triplica tu tiempo libre.</p>
+        
+        <a href="#" class="cta-button" onclick="alert('Aquí iría la función para abrir el popup de captura de lead'); return false;" style="display: block; text-align: center; padding: 12px 20px; font-size: 1.1rem; margin-bottom: 30px;">
+            ¡DESCARGA GRATIS!
+        </a>
 
-  <header>
-    <h1 class="heading-1">De la Fricción Operativa al Crecimiento Desatendido.</h1>
-    <p class="hero__tagline">AutomatizaPRO elimina las tareas repetitivas que consumen tiempo y recursos. Conectamos tu software para que la eficiencia sea la nueva norma.</p>
-    <button onclick="Calendly.initPopupWidget({url: 'https://calendly.com/info-automatizaprodigital/30min'});return false;" class="cta-button">Agenda tu llamada</button>
-  </header>
+        <div style="padding: 15px; background-color: var(--color-ui-surface); border-radius: 8px; border-left: 3px solid var(--color-accent-blue); margin-bottom: 30px;">
+            <p style="font-weight: var(--font-weight-semibold); font-size: 0.9rem; margin-bottom: 10px;">
+                🎁 **Extra PRO:** Agenda tu Diagnóstico gratuito de 15 minutos.
+            </p>
+            <button onclick="Calendly.initPopupWidget({url: 'https://calendly.com/info-automatizaprodigital/30min'});return false;" class="cta-button" style="padding: 10px 20px; font-size: 1rem; width: 100%;">
+                Diagnóstico PRO
+            </button>
+        </div>
 
-  <section id="servicios" class="section">
-    <h2 class="heading-2">Automatizaciones Express: Valor en 48 Horas.</h2>
-    <div class="services-grid">
-      <div class="service-card"><span class="service-card__icon">💬</span><h3>Alerta WhatsApp Lead</h3><p>Recibe un mensaje en WhatsApp cada vez que alguien completa un formulario o te contacta.</p></div>
-      <div class="service-card"><span class="service-card__icon">🧾</span><h3>Factura Express</h3><p>Genera automáticamente facturas en PDF y envíalas desde una hoja de cálculo.</p></div>
-      <div class="service-card"><span class="service-card__icon">🗓️</span><h3>Citas Sincronizadas</h3><p>Guarda reservas de Calendly o Google Calendar en tu CRM y envía recordatorios automáticos.</p></div>
+        <div class="sidebar-navigation__links" id="sidebar-nav-menu">
+            <a href="#home" class="sidebar-navigation__link">Inicio</a>
+            <a href="#filosofia" class="sidebar-navigation__link">Filosofía PRO</a>
+            <a href="#automatizaciones" class="sidebar-navigation__link">Servicios Core</a>
+            <a href="#equipo" class="sidebar-navigation__link">Sobre Nosotros</a>
+            <a href="#testimonios" class="sidebar-navigation__link">Testimonios</a>
+            <a href="#calculadora" class="sidebar-navigation__link">Calculadora ROI</a>
+            <a href="#contacto" class="sidebar-navigation__link sidebar-navigation__link--cta">Contacto PRO</a>
+        </div>
     </div>
-  </section>
+    <canvas id="particlesCanvas"></canvas>
 
-  <section id="casos" class="section">
-    <h2 class="heading-2">Los Números Hablan por Nosotros.</h2>
-    <div class="case-study">
-      <h3 class="case-study__title">Caso de Éxito: Facturación Instantánea</h3>
-      <p>Una consultora perdía 15 horas semanales en la transferencia de datos. AutomatizaPRO conectó su pasarela con su contabilidad, logrando:</p>
-      <div class="results-grid">
-        <div class="result-box"><span class="result-box__number">+60</span><p>Horas de Talento Recuperadas / Mes</p></div>
-        <div class="result-box"><span class="result-box__number">-95%</span><p>Reducción de Errores de Facturación</p></div>
-      </div>
+    <nav class="navigation" role="navigation">
+        <div class="navigation__container">
+            <div class="navigation__logo">Automatiza<span class="navigation__logo-pro">PRO</span></div>
+            
+            <button id="mode-toggle" aria-label="Alternar modo oscuro/claro">🌙</button>
+
+            <button id="nav-toggle" class="nav-toggle" aria-label="Abrir menú de navegación">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            
+            <div class="navigation__links" id="nav-menu">
+                </div>
+        </div>
+    </nav>
+
+    <main id="main-content" role="main">
+        <header id="home" class="hero section" role="banner">
+            <div class="hero__content">
+                <h1 class="heading-1 hero__headline">De la Fricción Operativa al Crecimiento Desatendido.</h1>
+                <p class="hero__tagline subheadline" style="margin-top: 24px;">AutomatizaPRO elimina las tareas repetitivas que queman el tiempo y los recursos. Conectamos tu software para que la eficiencia sea la nueva norma.</p>
+                <button onclick="Calendly.initPopupWidget({url: 'https://calendly.com/info-automatizaprodigital/30min'});return false;" class="cta-button">
+                    [ Agenda tu Diagnóstico Gratuito ]
+                </button>
+                <p style="color: var(--color-accent-cyan); font-weight: var(--font-weight-semibold); margin-top: 15px; font-size: 0.9rem;">
+                    **¡ATENCIÓN!** Solo quedan 3 slots disponibles esta semana.
+                </p>
+                </div>
+        </header>
+
+        <section id="filosofia" class="section" aria-labelledby="filosofia-titulo">
+            <h2 id="filosofia-titulo" class="heading-2">Filosofía PRO: Arquitectura de Sistemas Inteligentes.</h2>
+            <p class="subheadline">Nuestra metodología se basa en tres pilares que garantizan flujos de trabajo robustos, escalables y a prueba de futuro.</p>
+
+            <div class="services-grid">
+                <div class="service-card reveal" style="text-align: left;">
+                    <span class="service-card__icon">⚙️</span>
+                    <h3>Diseño Modular (Stack Agnostic)</h3>
+                    <p style="color: var(--color-text-subtle);">No estamos casados con una única herramienta. Diseñamos flujos modulares utilizando Make, Zapier, n8n o código puro, eligiendo la mejor solución para tu stack específico.</p>
+                    <p style="margin-top: 10px; font-weight: var(--font-weight-semibold);">**Keywords:** Integración de APIs, Zero-Code, Low-Code, Microservicios.</p>
+                </div>
+                <div class="service-card reveal" style="text-align: left;">
+                    <span class="service-card__icon">🛡️</span>
+                    <h3>Testing de Resiliencia (Error Handling)</h3>
+                    <p style="color: var(--color-text-subtle);">Un flujo no es PRO si falla al primer error. Implementamos *catch-all blocks* y sistemas de reintentos con notificación inmediata. Garantizamos el 99.9% de uptime operativo.</p>
+                    <p style="margin-top: 10px; font-weight: var(--font-weight-semibold);">**Keywords:** Observabilidad, Log Management, Data Integrity.</p>
+                </div>
+                <div class="service-card reveal" style="text-align: left;">
+                    <span class="service-card__icon">📈</span>
+                    <h3>Escalabilidad por Diseño (Scalability)</h3>
+                    <p style="color: var(--color-text-subtle);">Toda automatización se construye pensando en un crecimiento x10. Optimizamos el consumo de tareas y el tiempo de respuesta, asegurando que el flujo de hoy sirva para la empresa del mañana.</p>
+                    <p style="margin-top: 10px; font-weight: var(--font-weight-semibold);">**Keywords:** Optimización de costos, Latency Reduction, Future Proofing.</p>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="automatizaciones" class="section" aria-labelledby="automatizaciones-titulo">
+            <h2 id="automatizaciones-titulo" class="heading-2">Automatizaciones Express: Valor en 48 Horas.</h2>
+            <p class="subheadline">Tres ejemplos de flujos rápidos que transforman la operación en menos de dos días.</p>
+            <div class="services-grid">
+                <div class="service-card reveal">
+                    <span class="service-card__icon">💬</span>
+                    <h3>Alerta WhatsApp Lead</h3>
+                    <p style="color: var(--color-text-subtle);">Recibe un mensaje en WhatsApp cada vez que alguien completa un formulario o te contacta. Nunca pierdas un lead por no mirar el correo.</p>
+                </div>
+                <div class="service-card reveal">
+                    <span class="service-card__icon">🧾</span>
+                    <h3>Factura Express</h3>
+                    <p style="color: var(--color-text-subtle);">Genera automáticamente facturas en PDF y envíalas a tus clientes desde una hoja de cálculo. Facturación sin esfuerzo, lista en segundos.</p>
+                </div>
+                <div class="service-card reveal">
+                    <span class="service-card__icon">🗓️</span>
+                    <h3>Citas Sincronizadas</h3>
+                    <p style="color: var(--color-text-subtle);">Guarda automáticamente las reservas de Calendly o Google Calendar en una base de datos y envía recordatorios automáticos. Tu agenda siempre sincronizada.</p>
+                </div>
+            </div>
+            <div style="text-align:center; margin-top:48px;">
+                <button onclick="Calendly.initPopupWidget({url: 'https://calendly.com/info-automatizaprodigital/30min'});return false;" class="cta-button">
+                    [ Agenda tu Automatización Express ]
+                </button>
+                <p style="color: var(--color-accent-cyan); font-weight: var(--font-weight-semibold); margin-top: 15px; font-size: 0.9rem;">
+                    ¡Actúa rápido! Plazas limitadas para implementaciones de 48h.
+                </p>
+                </div>
+        </section>
+
+        <section id="casos" class="section" aria-labelledby="casos-titulo">
+            <h2 id="casos-titulo" class="heading-2">KPIs Extremos: Los Números Hablan por Nosotros.</h2>
+            <div class="case-study">
+                <h3 class="case-study__title">Caso de Éxito: Facturación Instantánea (Consultora B2B).</h3>
+                <p class="case-study__description subheadline">Una consultora perdía 15 horas semanales en la transferencia de datos y reconciliación de pagos. AutomatizaPRO conectó su pasarela con su contabilidad, logrando:</p>
+                
+                <div class="results-grid services-grid">
+                    <div class="result-box reveal">
+                        <span class="result-box__number">+60</span>
+                        <p style="color: var(--color-text-subtle);">Horas de Talento Recuperadas / Mes</p>
+                    </div>
+                    <div class="result-box reveal">
+                        <span class="result-box__number">-95%</span>
+                        <p style="color: var(--color-text-subtle);">Reducción de Errores de Facturación</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="equipo" class="section" aria-labelledby="equipo-titulo">
+            <h2 id="equipo-titulo" class="heading-2">Conoce a Nuestros Arquitectos PRO.</h2>
+            <p class="subheadline">Lideramos el diseño de flujos con precisión técnica y visión estratégica.</p>
+
+            <div class="team-grid services-grid">
+                <div class="team-card reveal">
+                    <div class="team-photo" style="background-image:url('assets/david.jpg');"></div>
+                    <h3 class="team-name">David Pastor Díaz</h3>
+                    <p class="team-role">Arquitecto de Automatización Jefe</p>
+                    <p class="team-desc" style="color: var(--color-text-subtle);">Especialista en diseño de flujos B2B y optimización de procesos. Creador de ecosistemas automatizados que transforman la forma en que las empresas operan.</p>
+                </div>
+                <div class="team-card reveal">
+                    <div class="team-photo" style="background-image:url('assets/lorenzo.jpg');"></div>
+                    <h3 class="team-name">Lorenzo Martín</h3>
+                    <p class="team-role">Ingeniero Senior de Integraciones</p>
+                    <p class="team-desc" style="color: var(--color-text-subtle);">Experto en APIs, bases de datos y automatización con Make, Zapier y n8n. Conecta tecnología y estrategia para eliminar la fricción operativa.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="testimonios" class="section" aria-labelledby="testimonios-titulo">
+            <h2 id="testimonios-titulo" class="heading-2">Lo que Dicen Nuestros Clientes PRO.</h2>
+            <p class="subheadline">Historias reales de empresas que pasaron del caos manual a la eficiencia automatizada.</p>
+        
+            <div class="services-grid" style="grid-template-columns: 1fr;">
+                <div class="service-card reveal" style="text-align: left; padding: 40px;">
+                    <blockquote style="font-size: 1.2rem; margin-bottom: 20px; color: var(--color-text-base);">
+                        "AutomatizaPRO no nos vendió una herramienta, nos vendió **60 horas al mes**. El flujo de facturación se paga solo con el tiempo que hemos recuperado para centrarnos en el negocio. ROI del **350%** en 6 meses."
+                    </blockquote>
+                    <p style="font-weight: var(--font-weight-bold);">- Laura G., CEO de TechNova Solutions</p>
+                    <p style="color: var(--color-accent-cyan);">Automatización de Finanzas y CRM</p>
+                </div>
+            </div>
+        </section>
+        <section id="calculadora" class="section" aria-labelledby="calculadora-titulo">
+            <h2 id="calculadora-titulo" class="heading-2">💡 Calcula tu Retorno de Inversión (ROI) en 1 Minuto</h2>
+            <p class="subheadline">Descubre el impacto real en la rentabilidad de tu empresa al eliminar las tareas manuales.</p>
+
+            <div class="calc-box reveal">
+                <label for="horas" style="color: var(--color-text-base);">Horas semanales en tareas repetitivas:</label>
+                <input type="number" id="horas" value="10" min="0">
+                <label for="valor" style="color: var(--color-text-base);">Valor hora (€):</label>
+                <input type="number" id="valor" value="25" min="0">
+                <label for="tiempo-implementacion" style="color: var(--color-text-base);">Tiempo de implementación (en semanas):</label>
+                <input type="number" id="tiempo-implementacion" value="2" min="0">
+                <button id="calcular" class="cta-button">Calcular ROI</button>
+                <p id="resultado" style="margin-top: 25px;"></p>
+            </div>
+        </section>
+
+        <section id="contacto" class="section" aria-labelledby="contacto-titulo">
+            <h2 id="contacto-titulo" class="heading-2">Inicia el Flujo: Hablemos de tu Próxima Automatización.</h2>
+            <div class="contact-methods">
+                
+                <div class="contact-methods__option reveal">
+                    <h3 class="contact-methods__title">Opción 1: El Diagnóstico Automatizado (Recomendado)</h3>
+                    <p style="color: var(--color-text-subtle);">Reserva 15 minutos en nuestro calendario. Accederás al flujo de David y Lorenzo y verás cómo empieza la eficiencia.</p>
+                    <button onclick="Calendly.initPopupWidget({url: 'https://calendly.com/info-automatizaprodigital/30min'});return false;" class="cta-button submit-cta" style="margin-top: 32px;">
+                        [ Agenda tu Llamada con un PRO ]
+                    </button>
+                    <p style="color: var(--color-accent-cyan); font-weight: var(--font-weight-semibold); margin-top: 15px; font-size: 0.9rem;">
+                        El tiempo de nuestros arquitectos es limitado. ¡Reserva ya!
+                    </p>
+                    </div>
+                
+                <div class="contact-methods__option reveal">
+                    <h3 class="contact-methods__title">Opción 2: Envía un Mensaje Directo</h3>
+                    <form class="contact-form" action="https://formspree.io/f/movknoad" method="POST" aria-label="Formulario de contacto">
+                        <input type="text" name="nombre" placeholder="Tu Nombre Completo" required aria-label="Nombre">
+                        <input type="email" name="_replyto" placeholder="Email de la Empresa" required aria-label="Email de la Empresa">
+                        <textarea name="mensaje" placeholder="¿Cuál es el proceso que más te frustra hoy?" aria-label="Mensaje sobre el proceso"></textarea>
+                        <button type="submit" class="cta-button submit-cta">Enviar Solicitud PRO</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <div id="exit-modal-overlay">
+        <div id="exit-modal-content">
+            <button class="modal-close" onclick="document.getElementById('exit-modal-overlay').style.display='none';body.classList.remove('no-scroll');">&times;</button>
+            <h3 style="color: var(--color-accent-cyan); font-size: 1.8rem; margin-bottom: 10px;">¡ESPERA! No te vayas sin esto.</h3>
+            <p style="color: var(--color-text-subtle); margin-bottom: 25px;">Si tienes dudas sobre el ROI, te regalamos un **Diagnóstico de 15 Minutos** para analizar el potencial de ahorro de tu empresa.</p>
+            <button onclick="Calendly.initPopupWidget({url: 'https://calendly.com/info-automatizaprodigital/30min'});document.getElementById('exit-modal-overlay').style.display='none';body.classList.remove('no-scroll');return false;" class="cta-button">
+                [ Quiero mi Diagnóstico Gratuito AHORA ]
+            </button>
+        </div>
     </div>
-  </section>
+    <footer class="footer" role="contentinfo">
+        <p>&copy; 2025 AutomatizaPRO. Todos los derechos reservados. Desarrollado con Arquitectura PRO Extremo.</p>
+        <p style="margin-top: 8px;">Email: <a href="mailto:info.automatizaprodigital@gmail.com">info.automatizaprodigital@gmail.com</a> | Teléfono: <a href="tel:+34688793329">+34 688 793 329</a> - <a href="tel:+34664499794">+34 664 499 794</a></p>
+    </footer>
 
-  <section id="contacto" class="section">
-    <h2 class="heading-2">Inicia el Flujo: Hablemos de tu Próxima Automatización</h2>
-    <div class="contact-methods">
-      <div class="contact-methods__option">
-        <h3 class="contact-methods__title">Opción 1: Agenda una llamada</h3>
-        <p>Reserva 15 minutos con nuestro equipo. Descubriremos juntos cómo optimizar tus procesos.</p>
-        <button onclick="Calendly.initPopupWidget({url: 'https://calendly.com/info-automatizaprodigital/30min'});return false;" class="cta-button" style="margin-top:20px;">Agenda tu llamada</button>
-      </div>
-      <div class="contact-methods__option">
-        <h3 class="contact-methods__title">Opción 2: Envía un mensaje</h3>
-        <form class="contact-form" action="https://formspree.io/f/movknoad" method="POST">
-          <input type="text" name="nombre" placeholder="Tu Nombre Completo" required>
-          <input type="email" name="_replyto" placeholder="Email de la Empresa" required>
-          <textarea name="mensaje" placeholder="¿Cuál es el proceso que más te frustra hoy?"></textarea>
-          <button type="submit" class="cta-button">Enviar Solicitud PRO</button>
-        </form>
-      </div>
-    </div>
-  </section>
+    <button id="n8n-chatbot-button" aria-label="Abrir chat" style="position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background-color: #3B82F6; color: black; border-radius: 50%; border: none; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.6); font-size: 28px; line-height: 60px; text-align: center; cursor: pointer; z-index: 10000; transition: transform 0.3s ease, background-color 0.3s, box-shadow 0.3s;">
+        <span class="online-indicator"></span> 💬
+    </button>
+    <iframe id="n8n-chatbot-iframe" src="https://n8n.automatizaprodigital.pro/chatbot" title="Chat n8n" style="position: fixed; bottom: 100px; right: 20px; width: 350px; height: 500px; border: 1px solid #00FFFF; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 255, 255, 0.5); z-index: 9999; transition: opacity 0.3s, transform 0.3s; transform: translateY(10px) scale(0.95); transform-origin: bottom right; opacity: 0; display: none; background: white;"></iframe>
 
-  <footer><p>&copy; 2025 AutomatizaPRO. Todos los derechos reservados.</p></footer>
 
-  <button id="n8n-chatbot-button" aria-label="Abrir chat">💬</button>
-  <iframe id="n8n-chatbot-iframe" src="https://n8n.automatizaprodigital.pro/chatbot" title="Chat n8n"></iframe>
-  <script>
-    const btn=document.getElementById('n8n-chatbot-button');
-    const iframe=document.getElementById('n8n-chatbot-iframe');
-    btn.addEventListener('click',()=>{const open=iframe.classList.toggle('is-open');btn.classList.toggle('is-open',open);});
-  </script>
+    <script>
+        const body = document.body;
+        const navigation = document.querySelector('.navigation');
+        const toggleBtn = document.getElementById('mode-toggle');
+        // const navToggle = document.getElementById('nav-toggle'); // Original nav-toggle, ya no se usa para la navegación principal
+        // const navMenu = document.getElementById('nav-menu'); // Original nav-menu, ya no se usa para la navegación principal
+        // const navLinks = document.querySelectorAll('.navigation__link'); // Originales, ahora se usarán los del sidebar
+        
+        const canvas = document.getElementById('particlesCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let animationFrameId;
 
-  <script>
-    /* Fondo partículas */
-    const canvas=document.getElementById('particlesCanvas');
-    const ctx=canvas.getContext('2d');let particles=[];
-    function initParticles(){
-      canvas.width=window.innerWidth;canvas.height=window.innerHeight;
-      const count=Math.max(40,Math.round(window.innerWidth/25));
-      particles=Array.from({length:count},()=>({
-        x:Math.random()*canvas.width,y:Math.random()*canvas.height,
-        vx:(Math.random()-0.5)*0.6,vy:(Math.random()-0.5)*0.6,r:Math.random()*2+0.8
-      }));
-      animateParticles();
-    }
-    function animateParticles(){
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      for(let i=0;i<particles.length;i++){
-        const p=particles[i];p.x+=p.vx;p.y+=p.vy;
-        if(p.x<0||p.x>canvas.width)p.vx*=-1;if(p.y<0||p.y>canvas.height)p.vy*=-1;
-        ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-        ctx.fillStyle='rgba(255,0,0,0.08)';ctx.fill();
-        for(let j=i+1;j<particles.length;j++){
-          const p2=particles[j];const dx=p.x-p2.x;const dy=p.y-p2.y;const dist=Math.sqrt(dx*dx+dy*dy);
-          if(dist<120){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(p2.x,p2.y);ctx.strokeStyle=`rgba(255,0,0,${1-dist/120})`;ctx.lineWidth=0.4;ctx.stroke();}
+        /* --- 9.1 LÓGICA DE PARTÍCULAS (Alto Rendimiento) --- */
+        function getParticleColor() {
+            return getComputedStyle(body).getPropertyValue('--color-particle-main').trim();
         }
-      }
-      requestAnimationFrame(animateParticles);
-    }
-    window.addEventListener('resize',initParticles);
-    initParticles();
-  </script>
+
+        function initParticles() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const count = Math.max(70, Math.round(window.innerWidth / 15)); 
+            particles = [];
+            
+            for(let i = 0; i < count; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: (Math.random() - 0.5) * 0.5,
+                    radius: Math.random() * 2 + 1
+                });
+            }
+        }
+
+        function animateParticles() {
+            const particleColorBase = getParticleColor();
+
+            ctx.fillStyle = 'rgba(13, 13, 13, 0.1)'; 
+            if (body.classList.contains('light-mode')) {
+                 ctx.fillStyle = 'rgba(240, 240, 240, 0.1)';
+            }
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach((p, i) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                
+                if(p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if(p.y < 0 || p.y > canvas.height) p.vy *= -1;
+                
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${particleColorBase}, 0.8)`; 
+                ctx.fill();
+                
+                particles.slice(i + 1).forEach(p2 => {
+                    const dx = p.x - p2.x;
+                    const dy = p.y - p2.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if(dist < 150) {
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.strokeStyle = `rgba(${particleColorBase}, ${1 - dist / 150})`; 
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                });
+            });
+            
+            animationFrameId = requestAnimationFrame(animateParticles);
+        }
+        
+        window.addEventListener('resize', () => {
+            cancelAnimationFrame(animationFrameId); 
+            initParticles();
+            animateParticles();
+        });
+
+
+        /* --- 9.2 LÓGICA MODO OSCURO/CLARO --- */
+        function applyMode(isLight) {
+            if (isLight) {
+                body.classList.add('light-mode');
+                toggleBtn.innerHTML = '☀️';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.classList.remove('light-mode');
+                toggleBtn.innerHTML = '🌙';
+                localStorage.setItem('theme', 'dark');
+            }
+            cancelAnimationFrame(animationFrameId);
+            animateParticles();
+        }
+
+        toggleBtn.addEventListener('click', () => {
+            const isLight = body.classList.contains('light-mode');
+            applyMode(!isLight);
+        });
+        
+        
+        /* --- 9.3 LÓGICA DE SCROLL (Sticky Header PRO) --- */
+        const handleScroll = () => {
+            if (window.scrollY > 50) {
+                navigation.classList.add('is-scrolled');
+            } else {
+                navigation.classList.remove('is-scrolled');
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+
+
+        /* --- 9.4 LÓGICA MOBILE MENU (Hamburguesa) - DESHABILITADA PARA LA NAVEGACIÓN PRINCIPAL --- */
+        // Este toggleMenu ya no es relevante para los enlaces de navegación principales,
+        // ya que estos se manejan con el #left-sidebar-toggle
+        // const toggleMenu = () => {
+        //     const isOpen = navMenu.classList.toggle('is-open');
+        //     navToggle.classList.toggle('is-active', isOpen);
+        //     body.classList.toggle('no-scroll', isOpen);
+        // };
+
+        // navToggle.addEventListener('click', toggleMenu);
+
+        // navLinks.forEach(link => {
+        //     link.addEventListener('click', () => {
+        //         if (window.innerWidth <= 900 && navMenu.classList.contains('is-open')) {
+        //             toggleMenu();
+        //         }
+        //     });
+        // });
+        
+        // window.addEventListener('scroll', () => {
+        //     if (window.innerWidth <= 900 && navMenu.classList.contains('is-open')) {
+        //          toggleMenu();
+        //     }
+        // }, { passive: true });
+
+
+        /* --- 9.5 LÓGICA SCROLL REVEAL (Intersection Observer PRO) --- */
+        const revealElements = document.querySelectorAll(".reveal");
+
+        const observerOptions = {
+            root: null, 
+            rootMargin: "0px",
+            threshold: 0.1 
+        };
+
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("visible");
+                    observer.unobserve(entry.target); 
+                }
+            });
+        }, observerOptions);
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+
+        /* --- 9.6 LÓGICA CALCULADORA ROI --- */
+        document.getElementById("calcular").addEventListener("click", ()=>{
+            const horas = parseFloat(document.getElementById("horas").value)||0;
+            const valor = parseFloat(document.getElementById("valor").value)||0;
+            const tiempo = parseFloat(document.getElementById("tiempo-implementacion").value)||0; 
+            
+            const ahorroMensual = horas * valor * 4;
+            const ahorroAnual = ahorroMensual * 12;
+            const costoImplementacion = horas * valor * tiempo * 0.75; 
+            
+            const roiAnual = costoImplementacion > 0 ? ((ahorroAnual / costoImplementacion) * 100).toFixed(1) : "N/A";
+            
+            const formatter = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0 });
+            
+            const resultado = document.getElementById("resultado");
+            resultado.innerHTML = `
+                💰 **Resultados PRO:**<br>
+                Ahorro mensual: <strong>${formatter.format(ahorroMensual)}</strong><br>
+                Ahorro anual proyectado: <strong>${formatter.format(ahorroAnual)}</strong><br>
+                ROI anual estimado (vs. inversión inicial): <strong>${roiAnual}%</strong>
+            `;
+        });
+
+        /* --- 9.9 LÓGICA DE INTENTO DE SALIDA (EXIT INTENT) --- */
+        let modalShown = false;
+        document.addEventListener('mouseleave', (e) => {
+            const modalOverlay = document.getElementById('exit-modal-overlay');
+            const modalContent = document.getElementById('exit-modal-content');
+
+            if (e.clientY < 10 && !modalShown) {
+                modalOverlay.style.display = 'flex';
+                setTimeout(() => {
+                    modalContent.classList.add('active');
+                }, 50);
+                modalShown = true; 
+                
+                body.classList.add('no-scroll'); 
+            }
+        });
+
+        /* --- 9.10 LÓGICA DEL NUEVO SIDEBAR PROMOCIONAL Y NAVEGACIÓN (Actualizado) --- */
+        const leftSidebar = document.getElementById('left-sidebar');
+        const sidebarToggle = document.getElementById('left-sidebar-toggle');
+        const sidebarClose = document.querySelector('.sidebar-close');
+        const sidebarNavLinks = document.querySelectorAll('.sidebar-navigation__link'); // Nuevos enlaces dentro del sidebar
+
+        const toggleSidebar = () => {
+            const isOpen = leftSidebar.classList.toggle('is-open');
+            body.classList.toggle('no-scroll', isOpen);
+        };
+
+        sidebarToggle.addEventListener('click', toggleSidebar);
+        sidebarClose.addEventListener('click', toggleSidebar);
+
+        // Cerrar sidebar al hacer click en un enlace de navegación
+        sidebarNavLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (leftSidebar.classList.contains('is-open')) {
+                    toggleSidebar(); // Cierra el sidebar al hacer click en un enlace
+                }
+            });
+        });
+
+        // Opcional: Cerrar si se pulsa fuera
+        document.addEventListener('click', (e) => {
+            if (leftSidebar.classList.contains('is-open') && 
+                !leftSidebar.contains(e.target) && 
+                e.target !== sidebarToggle &&
+                e.target.closest('#left-sidebar-toggle') === null) { /* Asegura que no sea el propio botón */
+                toggleSidebar();
+            }
+        });
+        /* FIN CÓDIGO AÑADIDO */
+
+
+        /* --- 9.7 INICIALIZACIÓN GENERAL --- */
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                applyMode(true);
+            } else {
+                applyMode(false);
+            }
+            
+            initParticles();
+            animateParticles();
+        });
+        
+        /* --- 9.8 CHATBOT LÓGICA --- */
+        const btnChatbot = document.getElementById("n8n-chatbot-button");
+        const iframeChatbot = document.getElementById("n8n-chatbot-iframe");
+        btnChatbot.addEventListener("click", () => {
+            const isOpen = iframeChatbot.style.display === 'block';
+            if (isOpen) {
+                iframeChatbot.style.opacity = '0';
+                iframeChatbot.style.transform = 'translateY(10px) scale(0.95)';
+                setTimeout(() => {
+                    iframeChatbot.style.display = 'none';
+                }, 300); 
+                btnChatbot.style.backgroundColor = 'var(--color-accent-blue)';
+            } else {
+                iframeChatbot.style.display = 'block';
+                setTimeout(() => {
+                    iframeChatbot.style.opacity = '1';
+                    iframeChatbot.style.transform = 'translateY(0) scale(1)';
+                }, 10);
+                btnChatbot.style.backgroundColor = 'var(--color-accent-cyan)';
+            }
+        });
+    </script>
+
+    <script type="text/javascript" id="hs-script-loader" async defer src="//js-eu1.hs-scripts.com/147073534.js"></script>
 </body>
 </html>
-
-
-
-
