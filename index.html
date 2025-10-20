@@ -864,60 +864,168 @@
         <section id="testimonios" class="section" aria-labelledby="testimonios-titulo">
             <h2 id="testimonios-titulo" class="heading-2">Lo que Dicen Nuestros Clientes PRO.</h2>
             <p class="subheadline">Historias reales de empresas que pasaron del caos manual a la eficiencia automatizada.</p>
-        
-            <div class="services-grid" style="grid-template-columns: 1fr;">
-                <div class="service-card reveal" style="text-align: left; padding: 40px;">
-                    <blockquote style="font-size: 1.2rem; margin-bottom: 20px; color: var(--color-text-base);">
-                        "AutomatizaPRO no nos vendió una herramienta, nos vendió **60 horas al mes**. El flujo de facturación se paga solo con el tiempo que hemos recuperado para centrarnos en el negocio. ROI del **350%** en 6 meses."
-                    </blockquote>
-                    <p style="font-weight: var(--font-weight-bold);">- Laura G., CEO de TechNova Solutions</p>
-                    <p style="color: var(--color-accent-cyan);">Automatización de Finanzas y CRM</p>
-                </div>
-            </div>
         </section>
-        <section id="calculadora" class="section" aria-labelledby="calculadora-titulo">
-            <h2 id="calculadora-titulo" class="heading-2">💡 Calcula tu Retorno de Inversión (ROI) en 1 Minuto</h2>
-            <p class="subheadline">Descubre el impacto real en la rentabilidad de tu empresa al eliminar las tareas manuales.</p>
+<!-- ============================= -->
+<!-- SECCIÓN DE COMENTARIOS PRO -->
+<!-- ============================= -->
+<section id="comentarios" class="section" aria-labelledby="comentarios-titulo">
+    <div style="text-align:center; margin-bottom: 30px;">
+        <button id="abrir-comentario" class="cta-button">Añadir Comentario</button>
+    </div>
 
-            <div class="calc-box reveal">
-                <label for="horas" style="color: var(--color-text-base);">Horas semanales en tareas repetitivas:</label>
-                <input type="number" id="horas" value="10" min="0">
-                <label for="valor" style="color: var(--color-text-base);">Valor hora (€):</label>
-                <input type="number" id="valor" value="25" min="0">
-                <label for="tiempo-implementacion" style="color: var(--color-text-base);">Tiempo de implementación (en semanas):</label>
-                <input type="number" id="tiempo-implementacion" value="2" min="0">
-                <button id="calcular" class="cta-button">Calcular ROI</button>
-                <p id="resultado" style="margin-top: 25px;"></p>
-            </div>
-        </section>
+    <!-- Carrusel de comentarios -->
+    <div id="comentarios-carrusel" class="service-card reveal" style="max-width:700px; margin:0 auto; text-align:left; position:relative;">
+        <div id="comentario-actual" style="min-height:120px; font-size:1.1rem; color:var(--color-text-base);"></div>
+        <p id="autor-actual" style="color:var(--color-accent-cyan); font-weight:600; margin-top:10px;"></p>
+        <button id="prev-comentario" class="cta-button" style="position:absolute; left:-80px; top:40%; transform:translateY(-50%); padding:10px 15px;">←</button>
+        <button id="next-comentario" class="cta-button" style="position:absolute; right:-80px; top:40%; transform:translateY(-50%); padding:10px 15px;">→</button>
+    </div>
+</section>
 
-        <section id="contacto" class="section" aria-labelledby="contacto-titulo">
-            <h2 id="contacto-titulo" class="heading-2">Inicia el Flujo: Hablemos de tu Próxima Automatización.</h2>
-            <div class="contact-methods">
-                
-                <div class="contact-methods__option reveal">
-                    <h3 class="contact-methods__title">Opción 1: El Diagnóstico Automatizado (Recomendado)</h3>
-                    <p style="color: var(--color-text-subtle);">Reserva 15 minutos en nuestro calendario. Accederás al flujo de David y Lorenzo y verás cómo empieza la eficiencia.</p>
-                    <button onclick="Calendly.initPopupWidget({url: 'https://calendly.com/info-automatizaprodigital/30min'});return false;" class="cta-button submit-cta" style="margin-top: 32px;">
-                        [ Agenda tu Llamada con un PRO ]
-                    </button>
-                    <p style="color: var(--color-accent-cyan); font-weight: var(--font-weight-semibold); margin-top: 15px; font-size: 0.9rem;">
-                        El tiempo de nuestros arquitectos es limitado. ¡Reserva ya!
-                    </p>
-                    </div>
-                
-                <div class="contact-methods__option reveal">
-                    <h3 class="contact-methods__title">Opción 2: Envía un Mensaje Directo</h3>
-                    <form class="contact-form" action="https://formspree.io/f/movknoad" method="POST" aria-label="Formulario de contacto">
-                        <input type="text" name="nombre" placeholder="Tu Nombre Completo" required aria-label="Nombre">
-                        <input type="email" name="_replyto" placeholder="Email de la Empresa" required aria-label="Email de la Empresa">
-                        <textarea name="mensaje" placeholder="¿Cuál es el proceso que más te frustra hoy?" aria-label="Mensaje sobre el proceso"></textarea>
-                        <button type="submit" class="cta-button submit-cta">Enviar Solicitud PRO</button>
-                    </form>
+<!-- Modal para añadir comentario -->
+<div id="modal-comentario" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10001; align-items:center; justify-content:center;">
+    <div style="background:var(--color-ui-surface-dark); padding:30px; border-radius:12px; border:2px solid var(--color-accent-blue); max-width:400px; width:90%; text-align:center;">
+        <h3 style="color:var(--color-accent-cyan); margin-bottom:20px;">Escribe tu comentario</h3>
+        <input type="text" id="nombre-comentario" placeholder="Tu nombre" style="width:100%; padding:10px; margin-bottom:10px; border-radius:6px; border:1px solid var(--color-accent-blue); background:#222; color:var(--color-text-base);">
+        <textarea id="texto-comentario" placeholder="Tu comentario" style="width:100%; height:100px; padding:10px; border-radius:6px; border:1px solid var(--color-accent-blue); background:#222; color:var(--color-text-base);"></textarea>
+        <div style="margin-top:15px;">
+            <button id="guardar-comentario" class="cta-button">Guardar</button>
+            <button id="cerrar-modal" class="cta-button" style="background:transparent; border:2px solid var(--color-accent-blue); color:var(--color-accent-blue); margin-left:10px;">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+/* ============================= */
+/*   LÓGICA DE COMENTARIOS PRO   */
+/* ============================= */
+const abrirComentarioBtn = document.getElementById('abrir-comentario');
+const modalComentario = document.getElementById('modal-comentario');
+const cerrarModalBtn = document.getElementById('cerrar-modal');
+const guardarComentarioBtn = document.getElementById('guardar-comentario');
+const nombreInput = document.getElementById('nombre-comentario');
+const textoInput = document.getElementById('texto-comentario');
+const comentarioActual = document.getElementById('comentario-actual');
+const autorActual = document.getElementById('autor-actual');
+const prevBtn = document.getElementById('prev-comentario');
+const nextBtn = document.getElementById('next-comentario');
+
+let comentarios = JSON.parse(localStorage.getItem('comentariosPRO')) || [
+  {nombre: 'Carlos M.', texto: 'AutomatizaPRO transformó nuestra gestión en tiempo récord. 100% recomendados.'},
+  {nombre: 'Ana P.', texto: 'La integración entre CRM y facturación fue un antes y después. Eficiencia total.'}
+];
+let indiceActual = 0;
+let autoplayInterval;
+
+function mostrarComentario() {
+  if (comentarios.length === 0) {
+    comentarioActual.innerHTML = 'Aún no hay comentarios. ¡Sé el primero en compartir tu experiencia!';
+    autorActual.textContent = '';
+  } else {
+    const c = comentarios[indiceActual];
+    comentarioActual.innerHTML = `"${c.texto}"`;
+    autorActual.textContent = `- ${c.nombre}`;
+  }
+}
+
+function iniciarAutoplay() {
+  clearInterval(autoplayInterval);
+  autoplayInterval = setInterval(() => {
+    if (comentarios.length > 0) {
+      indiceActual = (indiceActual + 1) % comentarios.length;
+      mostrarComentario();
+    }
+  }, 5000);
+}
+
+abrirComentarioBtn.addEventListener('click', ()=> {
+  modalComentario.style.display = 'flex';
+  nombreInput.value = '';
+  textoInput.value = '';
+});
+
+cerrarModalBtn.addEventListener('click', ()=> modalComentario.style.display = 'none');
+
+guardarComentarioBtn.addEventListener('click', ()=> {
+  const nombre = nombreInput.value.trim();
+  const texto = textoInput.value.trim();
+  if (nombre && texto) {
+    comentarios.push({nombre, texto});
+    localStorage.setItem('comentariosPRO', JSON.stringify(comentarios));
+    indiceActual = comentarios.length - 1;
+    mostrarComentario();
+    iniciarAutoplay();
+    modalComentario.style.display = 'none';
+  } else {
+    alert('Por favor, rellena ambos campos.');
+  }
+});
+
+prevBtn.addEventListener('click', ()=> {
+  if (comentarios.length > 0) {
+    indiceActual = (indiceActual - 1 + comentarios.length) % comentarios.length;
+    mostrarComentario();
+    iniciarAutoplay();
+  }
+});
+
+nextBtn.addEventListener('click', ()=> {
+  if (comentarios.length > 0) {
+    indiceActual = (indiceActual + 1) % comentarios.length;
+    mostrarComentario();
+    iniciarAutoplay();
+  }
+});
+
+document.addEventListener('DOMContentLoaded', ()=> {
+  mostrarComentario();
+  iniciarAutoplay();
+});
+</script>
+
+    <section id="calculadora" class="section" aria-labelledby="calculadora-titulo">
+        <h2 id="calculadora-titulo" class="heading-2">Calcula tu Retorno de Inversión (ROI) en 1 Minuto</h2>
+        <p class="subheadline">Descubre el impacto real en la rentabilidad de tu empresa al eliminar las tareas manuales.</p>
+
+        <div class="calc-box reveal">
+            <label for="horas" style="color: var(--color-text-base);">Horas semanales en tareas repetitivas:</label>
+            <input type="number" id="horas" value="10" min="0">
+            <label for="valor" style="color: var(--color-text-base);">Valor hora (€):</label>
+            <input type="number" id="valor" value="25" min="0">
+            <label for="tiempo-implementacion" style="color: var(--color-text-base);">Tiempo de implementación (en semanas):</label>
+            <input type="number" id="tiempo-implementacion" value="2" min="0">
+            <button id="calcular" class="cta-button">Calcular ROI</button>
+            <p id="resultado" style="margin-top: 25px;"></p>
+        </div>
+    </section>
+
+    <section id="contacto" class="section" aria-labelledby="contacto-titulo">
+        <h2 id="contacto-titulo" class="heading-2">Inicia el Flujo: Hablemos de tu Próxima Automatización.</h2>
+        <div class="contact-methods">
+            
+            <div class="contact-methods__option reveal">
+                <h3 class="contact-methods__title">Opción 1: El Diagnóstico Automatizado (Recomendado)</h3>
+                <p style="color: var(--color-text-subtle);">Reserva 15 minutos en nuestro calendario. Accederás al flujo de David y Lorenzo y verás cómo empieza la eficiencia.</p>
+                <button onclick="Calendly.initPopupWidget({url: 'https://calendly.com/info-automatizaprodigital/30min'});return false;" class="cta-button submit-cta" style="margin-top: 32px;">
+                    [ Agenda tu Llamada con un PRO ]
+                </button>
+                <p style="color: var(--color-accent-cyan); font-weight: var(--font-weight-semibold); margin-top: 15px; font-size: 0.9rem;">
+                    El tiempo de nuestros arquitectos es limitado. ¡Reserva ya!
+                </p>
                 </div>
+            
+            <div class="contact-methods__option reveal">
+                <h3 class="contact-methods__title">Opción 2: Envía un Mensaje Directo</h3>
+                <form class="contact-form" action="https://formspree.io/f/movknoad" method="POST" aria-label="Formulario de contacto">
+                    <input type="text" name="nombre" placeholder="Tu Nombre Completo" required aria-label="Nombre">
+                    <input type="email" name="_replyto" placeholder="Email de la Empresa" required aria-label="Email de la Empresa">
+                    <textarea name="mensaje" placeholder="¿Cuál es el proceso que más te frustra hoy?" aria-label="Mensaje sobre el proceso"></textarea>
+                    <button type="submit" class="cta-button submit-cta">Enviar Solicitud PRO</button>
+                </form>
             </div>
-        </section>
-    </main>
+        </div>
+    </section>
+</main>
     
     <div id="exit-modal-overlay">
         <div id="exit-modal-content">
